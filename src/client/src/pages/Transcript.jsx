@@ -244,15 +244,14 @@ const Transcript = () => {
             </div>
           ))
       ) : (
-        <p>
-          {data && data.message ? (
-            data.message
-          ) : (
-            <p className="text-gray-900 bg-white rounded-xl text-center shadow-md p-4 font-semibold text-lg max-w-[50vw] m-auto ">
-              No Transcript data available for you
-            </p>
-          )}
-        </p>
+        
+          
+            <p className="text-gray-900 bg-white rounded-xl text-center shadow-md p-4 font-semibold text-lg max-w-[50vw] m-auto mt-[100px]">
+            No Transcript data available for you
+          </p>
+           
+           
+        
       )}
   
       {selectedSemester && (

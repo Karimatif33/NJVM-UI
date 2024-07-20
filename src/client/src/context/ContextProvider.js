@@ -31,7 +31,7 @@ export const ContextProvider = ({ children }) => {
 
   const [currentcolor, setCurrentColor] = useState(() => {
     // Retrieve the color mode from localStorage, if available
-    return localStorage.getItem("colorMode") || "#1E4DB7";
+    return localStorage.getItem("colorMode") || "#b88b1a";
   });
 
 
