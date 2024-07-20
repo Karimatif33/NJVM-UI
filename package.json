@@ -1,0 +1,48 @@
+{
+  "name": "mylocationapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/msal-browser": "^3.19.0",
+    "@azure/msal-node": "^2.11.0",
+    "@azure/msal-react": "^2.0.20",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "axios": "^1.7.2",
+    "body-parser": "^1.20.2",
+    "config": "^3.3.12",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-async-handler": "^1.2.0",
+    "express-rate-limit": "^7.3.1",
+    "fs": "^0.0.1-security",
+    "helmet": "^7.1.0",
+    "http-proxy-middleware": "^3.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.1",
+    "morgan": "^1.10.0",
+    "node-fetch": "^2.7.0",
+    "path": "^0.12.7",
+    "pg": "^8.11.3",
+    "pg-promise": "^11.5.4",
+    "postgres": "^3.4.3",
+    "punycode": "^2.3.1",
+    "react-toastify": "^10.0.4",
+    "tee": "^0.2.0",
+    "winston": "^3.12.0"
+  },
+  "devDependencies": {
+    "@microsoft/microsoft-graph-types": "^2.40.0",
+    "nodemon": "^3.0.1"
+  }
+}

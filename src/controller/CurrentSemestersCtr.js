@@ -1,0 +1,134 @@
+const { pool, connect } = require("../db/dbConnect");
+const AsyncHandler = require("express-async-handler");
+const fetch = require("node-fetch").default;
+
+exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
+  const client = await connect();
+
+  const query = `
+    SELECT av.selectedacadyearvalue, av.selectedacadyearName, ot.selectedSemesterValue, ot.selectedSemesterrName
+    FROM Acad_year.Acad_year_Value AS av
+    INNER JOIN Cur_Semester.Semester AS ot ON av.id = ot.id;
+  `;
+
+  const result = await client.query(query);
+  const selectedacadyearvalue = result.rows[0].selectedacadyearvalue; // Access the value of the id column from the first row
+  const selectedsemestervalue = result.rows[0].selectedsemestervalue; // Access the value of the id column from the first row
+
+  console.log("ID value:", selectedsemestervalue);
+
+  const StuId = req.params.StuId;
+  const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUECurrentSemesters?index=StudentCurrentSemesters&student_id=${StuId}&curr_academic_year=${selectedacadyearvalue}&curr_semester=${selectedsemestervalue}`;
+
+  // https://oerp.horus.edu.eg/WSNJ/HUECurrentSemesters?index=StudentCurrentSemesters&course_id=32&curr_academic_year=69536&curr_semester=2
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch data from API. Status: ${response.status}`
+      );
+    }
+    const apiData = await response.json();
+
+    const students = apiData.students;
+
+    // Connect to the database
+    const SchemaAndTable = "StudentSemesters.students";
+
+    const deleteAllByStuIdQuery = `
+    DELETE FROM ${SchemaAndTable}
+    WHERE StudentID = $1;
+  `;
+    await client.query(deleteAllByStuIdQuery, [StuId]);
+
+    try {
+      for (const item of students) {
+        const IDValue = item.ID;
+        const StudentIDValue = item.StudentID;
+        const CourseIDValue = item.CourseID;
+        const AcadYearValue = item.AcadYear;
+        const SemesterValue = item.Semester;
+        const SemesterGPAValue = item.SemesterGPA !== null && item.SemesterGPA !== false ? item.SemesterGPA : 0;
+        const SemesterHRValue = item.SemesterHR !== null && item.SemesterHR !== false ? item.SemesterHR : 0;
+
+
+        const CurrentGPAValue = typeof item.CurrentGPA === 'number' ? Number(item.CurrentGPA.toFixed(2)) : null;
+
+
+        const final_gradeValue = item.final_grade;
+        const blockedValue = item.blocked;
+
+        // console.log(nameValue, IDValue);
+
+        const insertQuery = `
+        INSERT INTO ${SchemaAndTable} (ID, StudentID, CourseID, AcadYear, Semester, SemesterGPA, SemesterHR, CurrentGPA, FinalGrade, Blocked) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ON CONFLICT (ID) DO UPDATE
+        SET 
+        StudentID = $2,
+        CourseID = $3,
+        AcadYear = $4,
+        Semester = $5,
+        SemesterGPA = $7,
+        SemesterHR = $6,
+        CurrentGPA = $8,
+        FinalGrade = $9,
+        Blocked = $10;
+      `;
+
+        await client.query(insertQuery, [
+          IDValue,
+          StudentIDValue,
+          CourseIDValue,
+          AcadYearValue,
+          SemesterValue,
+          SemesterGPAValue,
+          SemesterHRValue,
+          CurrentGPAValue,
+          final_gradeValue,
+          blockedValue,
+        ]);
+        console.log("Data inserted into the database successfully");
+      }
+
+      // Select data based on the provided StuId
+      const selectQuery = `
+    SELECT StudentSemesters.students.*
+    FROM StudentSemesters.students
+    WHERE StudentSemesters.students.StudentID = $1;
+  `;
+
+      const result = await client.query(selectQuery, [StuId]);
+
+      res.json(result.rows);
+      client.release();
+      return { status: "success" };
+    } catch (error) {
+      console.error(`Error fetching data from ${apiUrl}:`, error.message);
+      return { status: "fail", error: `Error fetching data from ${apiUrl}` };
+    }
+  } finally {
+    // console.log("client release");;
+  }
+
+  //   } catch (error) {
+  //     console.error(error.message);
+  //   }
+  // } catch (error) {
+  //   console.error("Error fetching data:", error.message);
+
+  //   const selectQuery = `
+  //   SELECT StudentSemesters.students.*
+  //   FROM StudentSemesters.students
+  //   WHERE StudentSemesters.students.StudentID = $1;
+  // `;
+
+  //   const result = await client.query(selectQuery, [StuId]);
+  //   res.json(result.rows);
+  //   console.log("getting data from DB");
+  // } finally {
+  //   if (client) {
+  //     client.release();
+  //   }
+  // }
+});

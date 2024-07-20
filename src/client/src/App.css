@@ -1,0 +1,213 @@
+@import url("https://cdn.syncfusion.com/ej2/material.css");
+
+.sidebar {
+  box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
+}
+.nav-item,
+.navbar {
+  z-index: 10000;
+}
+@media screen and (max-width: 800px) {
+  .sidebar {
+    z-index: 10000000;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .toggle {
+    display: none;
+  }
+}
+
+.e-dlg-center-center,
+.e-quick-popup-wrapper.e-device {
+  z-index: 1000000 !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(216, 216, 216);
+  border-radius: 40px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* color-picker style  */
+
+.preview {
+  background: transparent
+    url("https://ej2.syncfusion.com/react/demos/src/color-picker/images/pen.png")
+    no-repeat;
+  display: inline-block;
+  height: 80px;
+  margin: 10px 0;
+  min-width: 300px;
+  max-width: 600px;
+  background-color: #008000;
+}
+
+.e-input-group:not(.e-float-icon-left),
+.e-input-group.e-success:not(.e-float-icon-left),
+.e-input-group.e-warning:not(.e-float-icon-left),
+.e-input-group.e-error:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
+  border: none;
+}
+
+@media screen and (max-width: 600px) {
+  .AbccSheet {
+    margin-top: 100px;
+    margin-left: 15px;
+  }
+  .incoives {
+    margin-top: 100px;
+    margin-left: 15px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .StudyTimetable {
+    margin-top: 100px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .DashboardCard {
+    padding-top: 1.25rem;
+  }
+}
+@media screen and (max-width: 600px) {
+  .navuser {
+gap: 0;
+  }
+}
+@media screen and (max-width: 600px) {
+  .text-STT {
+    font-size: 0.8rem;
+    line-height: 0.8rem;
+  }
+}
+@media screen and (max-width: 600px) {
+  .incoives {
+    margin-top: 100px;
+    margin-left: 40px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .fontsmall {
+    font-size: 10px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .margin {
+    margin-top: 50%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .marginPx {
+    margin-top: 50px;
+  }
+}
+@media screen and (max-width: 767px) {
+  .margin100Px {
+    margin-top: 100px;
+  }
+}
+@media screen and (max-width: 767px) {
+  .widthForm {
+   width: 85%;
+  }
+}
+@media screen and (max-width: 767px) {
+  .pading0Form {
+   padding: 0px;
+  }
+}
+@media screen and (max-width: 767px) {
+  .disInlineBlockForm {
+   display: inline-block;
+  }
+}
+@media screen and (max-width: 600px) {
+  .margin30Px {
+    margin-top: 30px;
+  }
+}
+@media screen and (max-width: 1220px) {
+  .disBlock {
+    display: block;
+  }
+}
+@media screen and (max-width: 1220px) {
+  .transCard {
+    max-width: 300px;
+    min-width: 310px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .btnAc {
+    min-width: 100%;
+    margin-bottom: 2px;
+  }
+}
+@media screen and (max-width: 1220px) {
+  .invoiceCard {
+    max-width: 300px;
+    min-width: 320px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .widHgMob {
+    width: 42vh;
+    height: 50;  }
+}
+
+.widHg {
+  width: 100%;
+  height: 100%;
+
+}
+
+@media screen and (max-width: 767px) {
+  .minwidcard {
+    min-width: 300px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .qusbox {
+font-size: 10px;
+padding: 0;
+box-shadow: 0;
+background-color: transparent;
+color: black;
+  }
+}
+
+
+@media screen and (max-width: 900px) {
+  .textpx {
+font-size: 12px;
+
+  }
+}
+@media screen and (max-width: 900px) {
+  .wid {
+padding: 0.2rem;
+  }
+}
+@media screen and (max-width: 900px) {
+  .wid80hun {
+width: 80%;
+  }
+}
+
+#charts_Series_0 rect,
+#charts_Series_1 rect {
+  transform: translateX(calc(50% - 25px)); /* Adjust the value as needed */
+}

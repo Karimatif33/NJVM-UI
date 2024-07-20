@@ -1,0 +1,91 @@
+npm ERR! Missing script: "servr"
+npm ERR! 
+npm ERR! To see a list of scripts, run:
+npm ERR!   npm run
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2024-07-18T22_07_24_282Z-debug.log
+npm ERR! Missing script: "servr"
+npm ERR! 
+npm ERR! To see a list of scripts, run:
+npm ERR!   npm run
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2024-07-18T22_07_31_551Z-debug.log
+
+> mylocationapp@1.0.0 start
+> node src/server.js
+
+Error: Failed to fetch data from API. Status: 500
+    at /home/nodejs/src/controller/CurrentSemestersCtr.js:27:13
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+Error: Failed to fetch data from API. Status: 500
+    at /home/nodejs/src/controller/CurrentTranscriptCtr.js:29:13
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+npm ERR! Missing script: "servr"
+npm ERR! 
+npm ERR! To see a list of scripts, run:
+npm ERR!   npm run
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2024-07-19T08_32_49_100Z-debug.log
+
+> mylocationapp@1.0.0 start
+> node src/server.js
+
+
+> mylocationapp@1.0.0 start
+> node src/server.js
+
+node:events:371
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::443
+    at Server.setupListenHandle [as _listen2] (node:net:1305:16)
+    at listenInCluster (node:net:1353:12)
+    at Server.listen (node:net:1440:7)
+    at Object.<anonymous> (/home/nodejs/src/server.js:153:34)
+    at Module._compile (node:internal/modules/cjs/loader:1095:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1124:10)
+    at Module.load (node:internal/modules/cjs/loader:975:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:816:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:79:12)
+    at node:internal/main/run_main_module:17:47
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1332:8)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 443
+}
+
+> mylocationapp@1.0.0 start
+> node src/server.js
+
+node:events:371
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::443
+    at Server.setupListenHandle [as _listen2] (node:net:1305:16)
+    at listenInCluster (node:net:1353:12)
+    at Server.listen (node:net:1440:7)
+    at Object.<anonymous> (/home/nodejs/src/server.js:153:34)
+    at Module._compile (node:internal/modules/cjs/loader:1095:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1124:10)
+    at Module.load (node:internal/modules/cjs/loader:975:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:816:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:79:12)
+    at node:internal/main/run_main_module:17:47
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1332:8)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 443
+}

@@ -1,0 +1,68 @@
+const express = require("express");
+
+const { fetshingLevels } = require("../controller/LevelsCtr");
+const { fetshingFacultyData } = require("../controller/FacultyDataCtr");
+const { fetshingCourseData } = require("../controller/CourseDataCtr");
+const { fetshingStaffData } = require("../controller/StaffDataCtr");
+const { fetshingStudentData } = require("../controller/StudentDataCtr");
+const { fetshingAcadYearData } = require("../controller/AcadYearDataCtr");
+const { fetshingSemesterData } = require("../controller/SemesterDataCtr");
+const { fetshingGradesData } = require("../controller/GradesDataCtr");
+const { fetshingStudentSemesters } = require("../controller/StudentSemestersCtr");
+const { fetshingSubjectsData } = require("../controller/CourseSubjectsctrl");
+const { fetshingStudentTranscript } = require("../controller/StudentTranscriptCtr");
+const { fetshingTotalsData } = require("../controller/TotalsDataCtr");
+const { fetshingCurrentSemesters } = require("../controller/CurrentSemestersCtr");
+const { fetshingCurrentTranscript } = require("../controller/CurrentTranscriptCtr");
+const { fetshingStudyTimetable } = require("../controller/St-TimetableCtrl");
+const { fetshingExamTimetable } = require("../controller/ExamTimetableCtr");
+const { fetshingCheckBlock } = require("../controller/StudentCheckBlockCtr");
+const { fetshingStuFeesData } = require("../controller/StuFeesDataCtrl");
+const { fetshingAttendance } = require("../controller/AttendanceCtrl");
+const { fetshingCurrentSemestersCourse } = require("../controller/CurrentSemestersCtr(Course)");
+const { fetshingCurrentTranscriptCourse } = require("../controller/CurrentTranscriptCtr(Course)");
+const { CurAcaYearValCtr } = require("../controller/CurAcaYearValCtr");
+const { CurAcaYearValBlockCtr } = require("../controller/CurAcaYearValBlockCtr");
+const { CurSemesterValCtr } = require("../controller/CurSemesterValCtr");
+const { CurSemesterValBlockCtr } = require("../controller/CurSemesterValBlockCtr");
+const { UpdateStudentCtr } = require("../controller/UpdateStudentCtr");
+const { fetshingQuestionsData } = require("../controller/QuestionsData-Ctr");
+const { fetshingCatQuesServData } = require("../controller/Cat-QuesServData-Ctr");
+const { fetshingCatQuesTypeData } = require("../controller/Cat-QuesTypeData-Ctr");
+const { PostQust } = require("../controller/PostQust");
+
+
+const AllRoutes = express.Router();
+AllRoutes.get("/levels", fetshingLevels);
+AllRoutes.get("/faculty-data", fetshingFacultyData);
+AllRoutes.get("/courses", fetshingCourseData);
+AllRoutes.get("/staff", fetshingStaffData); 
+AllRoutes.get("/all-students", fetshingStudentData);
+AllRoutes.get("/acad-year", fetshingAcadYearData);
+AllRoutes.get("/semester-data", fetshingSemesterData);
+AllRoutes.get("/grades-data", fetshingGradesData);
+AllRoutes.get("/student-semesters/:courseId", fetshingStudentSemesters);
+AllRoutes.get("/Subjects-data", fetshingSubjectsData);
+AllRoutes.get("/student-transcript/:courseId", fetshingStudentTranscript);
+AllRoutes.get("/totals-data/:courseId", fetshingTotalsData);
+AllRoutes.get("/CurrentSemesters&student_id=:StuId", fetshingCurrentSemesters);
+AllRoutes.get("/CurrentTranscript&student_id=:StuId", fetshingCurrentTranscript);
+AllRoutes.get("/StudyTimetable&student_id=:StuId", fetshingStudyTimetable);
+AllRoutes.get("/ExamTimetable&student_id=:StuId", fetshingExamTimetable);
+AllRoutes.get("/StudentCheckBlock&student_id=:StuId", fetshingCheckBlock);
+AllRoutes.get("/StuFeesData&student_id=:StuId", fetshingStuFeesData);
+AllRoutes.get("/Attendance&studentID=:StuId", fetshingAttendance);
+AllRoutes.get("/Current-semesters/:courseId", fetshingCurrentSemestersCourse);
+AllRoutes.get("/Current-Transcript/:courseId", fetshingCurrentTranscriptCourse);
+AllRoutes.post("/CurAcad_yearValue", CurAcaYearValCtr);
+AllRoutes.post("/CurAcad_yearBlock", CurAcaYearValBlockCtr);
+AllRoutes.post("/CurSemesterBlock_val", CurSemesterValBlockCtr);
+AllRoutes.post("/CurSemester_val", CurSemesterValCtr);
+AllRoutes.post("/UpdateStudent_val", UpdateStudentCtr);
+AllRoutes.get("/QuestionsData", fetshingQuestionsData);
+AllRoutes.get("/CatQuesServData", fetshingCatQuesServData);
+AllRoutes.get("/CatQuesTypeData", fetshingCatQuesTypeData);
+AllRoutes.post("/SubmitQuestions", PostQust);
+
+
+module.exports = AllRoutes;
