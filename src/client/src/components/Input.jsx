@@ -4,13 +4,17 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 const InputForm = () => {
   const navigate = useNavigate();
-  const { setUser, currentcolor, user } = useStateContext();
+  const { setUser, currentcolor, user, activeMenu, screenSize, setActiveMenu} = useStateContext();
   const [inputValue, setInputValue] = useState("");
   // console.log(setUser, inputValue, setInputValue);
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
-
+  const handleCloseSideBar = () => {
+    if (activeMenu !== undefined && screenSize <= 900) {
+      setActiveMenu(false);
+    }
+  };
   // const storedId = localStorage.getItem("StudentCode");
   // if (storedId) {
   //   setUser(storedId);}
@@ -28,6 +32,7 @@ const InputForm = () => {
         localStorage.setItem("StudentCode", inputValueAsNumber);
         toast.success(`Logged in as ${inputValueAsNumber}`);
         navigate("/Dashboard");
+        handleCloseSideBar()
       }
     } else {
       toast.error("Invalid Student ID");

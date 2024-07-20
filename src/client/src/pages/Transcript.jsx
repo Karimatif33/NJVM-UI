@@ -177,7 +177,7 @@ const Transcript = () => {
   };
 
   return (
-    <div className="mt-8 mx-auto mb-8 mr-5 ml-10 flex flex-wrap gap-9 incoives">
+    <div className="mt-8 mx-auto mb-8 mr-5 ml-10 flex flex-wrap gap-9 transCard">
       {loading ? (
         <Spinner currentcolor={currentcolor} />
       ) : data && data.length > 0 ? (
@@ -192,11 +192,11 @@ const Transcript = () => {
               <h2 className="text-2xl font-semibold mb-4 dark:text-white">
                 {academicYear}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 ">
                 {semesters.map((semester) => (
                   <div
                     key={semester?.FKid}
-                    className={`max-w-[360px] min-w-[360px] p-9 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 cursor-pointer relative ${
+                    className={`max-w-[360px] min-w-[340px] p-9 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 cursor-pointer relative ${
                       semester.blocked ? 'dark:opacity-80 pointer-events-none opacity-80 dark:bg-gray-800' : ''
                     }`}
                     onClick={() => {
@@ -312,7 +312,7 @@ const Transcript = () => {
                       key={index}
                       className={`${
                         index % 2 === 0
-                          ? "bg-[#b88b1aa4] dark:bg-gray-700 text-center"
+                          ? "bg-gray-100 dark:bg-gray-700 text-center"
                           : "bg-white dark:bg-gray-800 text-center"
                       }`}
                     >

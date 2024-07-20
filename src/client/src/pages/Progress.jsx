@@ -273,11 +273,11 @@ function Progress() {
     <div className="mt-8 mx-auto max-w-6xl mb-8 margin100Px">
     <div className="py-4 dark:bg-gray-800 mx-auto my-4 ">
       <h2 className="text-lg font-bold mb-4 text-center dark:text-white">
-        Progress Report
+        Progress 
       </h2>
       <div className="overflow-x-auto rounded-xl">
         <table className="w-full table-auto border-collapse shadow-md dark:border-gray-700 dark:text-white ">
-          <thead className="bg-gray-200 dark:bg-gray-700">
+          <thead className="text-xs text-white uppercase bg-[#b88b1a] dark:bg-amber-700 dark:text-gray-100" style={{ backgroundColor: `${currentcolor}` }}>
             <tr>
               <th className="w-1/8 px-4 py-3 text-center sm:w-1/6 md:w-1/6 lg:w-1/6">
                 Code

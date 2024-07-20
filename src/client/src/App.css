@@ -78,11 +78,17 @@
 @media screen and (max-width: 600px) {
   .DashboardCard {
     padding-top: 1.25rem;
+    margin-top: 25px;
   }
 }
 @media screen and (max-width: 600px) {
   .navuser {
-gap: 0;
+gap: 0.1;
+  }
+}
+@media screen and (max-width: 750px) {
+  .chartssGap {
+    gap: 2.5rem;
   }
 }
 @media screen and (max-width: 600px) {
@@ -95,6 +101,17 @@ gap: 0;
   .incoives {
     margin-top: 100px;
     margin-left: 40px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .transCard {
+    margin-top: 100px;
+    margin-left: 30px;
+  }
+}
+@media screen and (max-width: 800px) {
+  .transCardGap {
+gap: 14rem;
   }
 }
 @media screen and (max-width: 600px) {

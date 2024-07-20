@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { RiCloseLine } from "react-icons/ri";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import MCLogoMainSidebar from '../utiltis/IMG/MC.png'; // Adjust the path as necessary
+import HUELogoMainSidebar from '../utiltis/IMG/HUE.png'; // Adjust the path as necessary
 
 import { links, links_Stu } from "./utiltisContact/NavLinksData";
 // import { useStateContext } from '../contexts/ContextProvider';
@@ -34,8 +35,8 @@ export const Sidebar = () => {
               onClick={() => {}}
               className="items-center gap-3 ml-[2px] mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
             >
-        <span className="w-[215px] ml-7">
-              <img src={MCLogoMainSidebar} alt="MC" />
+        <span className="w-[170px] ml-[45px]">
+              <img src={HUELogoMainSidebar} alt="MC" />
               </span>
               {/* <span>HUE</span> */}
             </Link>

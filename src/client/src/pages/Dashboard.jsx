@@ -107,7 +107,7 @@ function Dashboard() {
       <div className="mt-12">
         <div className="flex flex-wrap lg:flex-nowrap justify-center ">
           {/* <div className= "bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-[36rem] p-6 pt-9 m-3 bg-hero-pattern bg-no-repat bg-cover bg-center drop-shadow-xl hover:drop-shadow-2xl"> */}
-          <div className="DashboardCard bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-[36rem] p-6 pt-9 m-3  drop-shadow-xl hover:drop-shadow-2xl">
+          <div className="DashboardCard bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-[11.3rem] rounded-xl w-full lg:w-[36rem] p-6 pt-9 m-3  drop-shadow-xl hover:drop-shadow-2xl">
             <div className="flex justify-between items-center ">
               <div>
                 {students.map((item) => (
@@ -237,7 +237,7 @@ function Dashboard() {
               <Stacked width="550px" height="360px" />
             </div> */}
                   <div className="flex flex-col gap-[6.5rem] flex-wrap justify-center p-4">
-      <div className="mt-10 flex flex-col md:flex-row gap-[8.5rem] flex-wrap justify-center">
+      <div className="mt-10 flex flex-col md:flex-row gap-[8.5rem] flex-wrap justify-center chartssGap">
 
           <LineChart />
 

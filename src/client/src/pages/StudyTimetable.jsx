@@ -59,92 +59,87 @@ const StudyTimetable = () => {
   const getTypeStyle = (type) => {
     switch (type) {
       case "Lab":
-        return "bg-red-400 opacity-0.7 text-center";
+        return "bg-[#f2766d53] opacity-0.3 text-center";
       case "Lecture":
-        return "bg-green-400 opacity-0.7 text-center";
+        return "bg-[#2fee582f] opacity-0.3 text-center";
       case "Section":
-        return "bg-orange-400 opacity-0.7 text-center";
+        return "bg-[#e2fd4a58] opacity-0.3 text-center";
       default:
         return "";
     }
   };
   return (
-    <div className="mt-8 mx-auto max-w-5xl mb-8">
-      {loading ? (
-        <Spinner currentcolor={currentcolor} />
-      ) : (
-        <div className="overflow-x-auto shadow-md sm:rounded-lg StudyTimetable">
-          {Object.entries(organizedData).map(([day, dayData]) => (
-            <div key={day} className="mb-8">
-              <h2
-                style={{ backgroundColor: `${currentcolor}` }}
-                className="font-bold my-4 text-center text-white bg-[#b88b1a] cursor-pointer text-lg opacity-0.9 rounded-full p-2 hover:drop-shadow-xl max-w-[150px] mx-auto"
+<div className="mt-8 mx-auto max-w-5xl mb-8">
+  {loading ? (
+    <Spinner currentcolor={currentcolor} />
+  ) : (
+    <div className="overflow-x-auto shadow-md sm:rounded-lg StudyTimetable">
+      <table className="w-full text-sm text-left text-gray-800 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+        <thead className="text-xs text-white uppercase bg-[#b88b1a] dark:bg-amber-700 dark:text-gray-100" style={{ backgroundColor: `${currentcolor}` }}>
+          <tr>
+            <th scope="col" className="px-6 py-3 font-semibold">Subject</th>
+            <th scope="col" className="px-6 py-3 font-semibold">From - To</th>
+            <th scope="col" className="px-6 py-3 font-semibold">Type</th>
+            <th scope="col" className="px-6 py-3 font-semibold">Group</th>
+            <th scope="col" className="px-6 py-3 font-semibold">Place</th>
+            <th scope="col" className="px-6 py-3 font-semibold">Lecturer</th>
+          </tr>
+        </thead>
+        {Object.entries(organizedData).map(([day, dayData]) => (
+          <tbody key={day} className="dark:text-white">
+            <tr>
+              <td colSpan="6" className="px-6 py-4 font-bold">
+                <h2
+                  style={{ backgroundColor: `${currentcolor}` }}
+                  className="my-4 text-center text-white bg-[#b88b1a] cursor-pointer text-lg opacity-0.9 rounded-full p-2 hover:drop-shadow-xl max-w-[150px] mx-auto"
+                >
+                  {day}
+                </h2>
+              </td>
+            </tr>
+            {dayData.map((item, index) => (
+              <tr
+                key={index}
+                className={`${
+                  index % 2 === 0
+                    ? "bg-gray-100 dark:bg-gray-700 border-y-2	dark:border-gray-600 border-gray-200"
+                    : "bg-white dark:bg-gray-800 border-y-2	dark:border-gray-600 border-gray-200"
+                }`}
               >
-                {day}
-              </h2>
-              <table className="w-full text-sm text-left text-gray-800 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg overflow-hidden ">
-                <thead className="text-xs text-white uppercase bg-[#b88b1a] dark:bg-amber-700 dark:text-gray-100 ">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 font-semibold">
-                      Subject
-                    </th>
-                    <th scope="col" className="px-6 py-3 font-semibold">
-                      From - To
-                    </th>
-                    <th scope="col" className="px-6 py-3  font-semibold">
-                      Type
-                    </th>
-                    <th scope="col" className="px-6 py-3 font-semibold">
-                      Group
-                    </th>
-                    <th scope="col" className="px-6 py-3 font-semibold">
-                      Place
-                    </th>
-                    <th scope="col" className="px-6 py-3 font-semibold">
-                      Lecturer
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="dark:text-white">
-                  {dayData.map((item, index) => (
-                    <tr
+                <td className="px-6 py-4 font-bold">{item.subject}</td>
+                <td className="px-6 py-4 font-bold">{`${item.from} - ${item.to}`}</td>
+                <td
+                  className={`px-6 py-4 font-bold opacity-0.9 text-center md:mt-4 sm:mt-7 ${getTypeStyle(
+                    item.type
+                  )}`}
+                >
+                  {item.type}
+                </td>
+                {/* <td
+                  className={`px-6 py-4 font-bold opacity-0.9 text-center md:mt-4 sm:mt-7`}
+                >
+                  {item.type}
+                </td> */}
+                <td className="px-6 py-4 font-bold">{item.group}</td>
+                <td className="px-6 py-4 font-bold">{item.place}</td>
+                <td className="px-6 py-4">
+                  {item.faculty_ids.map((facultyName, index) => (
+                    <div
                       key={index}
-                      className={`${
-                        index % 2 === 0
-                          ? "bg-gray-100 dark:bg-gray-700"
-                          : "bg-white dark:bg-gray-800 "
-                      }`}
+                      className="mb-1 text-black font-bold opacity-0.9 rounded-2xl bg-gray-300 text-center"
                     >
-                      <td className="px-6 py-4 font-bold ">{item.subject}</td>
-                      <td className="px-6 py-4 font-bold ">{`${item.from} - ${item.to}`}</td>
-                      <td
-                        className={`px-6 py-4 font-bold opacity-0.9 rounded-3xl text-center inline-block md:mt-4 sm:mt-7 ${getTypeStyle(
-                          item.type
-                        )}`}
-                      >
-                        {item.type}
-                      </td>
-                      <td className="px-6 py-4 font-bold ">{item.group}</td>
-                      <td className="px-6 py-4 font-bold ">{item.place}</td>
-                      <td className="px-6 py-4 ">
-                        {item.faculty_ids.map((facultyName, index) => (
-                          <div
-                            key={index}
-                            className="mb-1 text-black  font-bold opacity-0.9 rounded-2xl bg-gray-300 text-center "
-                          >
-                            {facultyName}
-                          </div>
-                        ))}
-                      </td>
-                    </tr>
+                      {facultyName}
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
-        </div>
-      )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        ))}
+      </table>
     </div>
-  );
+  )}
+</div>
+  )
 };
 export default StudyTimetable;
