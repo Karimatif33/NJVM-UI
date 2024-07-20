@@ -2,9 +2,23 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/ExamTimetableSchema");
+const logger = require("../model/logger");
 
-exports.fetshingExamTimetable = AsyncHandler(async (req, res) => {
-  const StuId = req.params.StuId;
+exports.fetshingExamTimetable = AsyncHandler(async (req, res, next) => {
+  let StuId = req.params.StuId;
+
+  // Check if StuId is null or undefined, and set it to 0 if true
+  if (StuId === null || StuId === undefined) {
+    StuId = 0;
+  } else {
+    // Convert StuId to a number if it's a string or other type
+    StuId = parseInt(StuId, 10);
+    
+    // Check if conversion failed and set to 0 if so
+    if (isNaN(StuId)) {
+      StuId = 0;
+    }
+  }
   const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUEExamTimetable?index=ExamTimetable&student_id=${StuId}`;
   // const apiUrl = `https://odoo.horus.edu.eg/WSNJ/HUEExamTimetable?index=ExamTimetable&student_id=${StuId}`;
   // 7221004 --- 10607
@@ -110,9 +124,9 @@ exports.fetshingExamTimetable = AsyncHandler(async (req, res) => {
       client.release();
       console.log("client release ");
     }
-  } catch (error) {
+  } catch (err) {
     const client = await connect();
-    console.error("Error querying data:", error.message);
+    logger.error(`Database query error: ${err.message}`);
 
     const selectQuery = `
       SELECT *

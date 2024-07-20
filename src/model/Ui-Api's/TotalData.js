@@ -34,6 +34,7 @@ async function fetchDataByIdFromDB(code) {
     else {
       code = parseInt(code);
       console.log("Fetching data for id:", code);
+      
     }
     const result = await client.query(query, [code]);
     const dataWithDefaults = result.rows.map((row) => {

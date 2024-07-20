@@ -1,6 +1,8 @@
 const axios = require('axios'); // Import Axios for making HTTP requests
-const { pool } = require("../../db/dbConnect");
+const { pool, connect } = require("../../db/dbConnect");
 const { fetchAndStoreBlockReasons } = require('../../controller/StudentCheckBlockCtr');
+const { createSchemaAndTable } = require("../../model/StudentCheckBlockSchema");
+
 async function fetchStudentByCode(id) {
   const query = `
     SELECT 
@@ -46,27 +48,124 @@ async function fetchStudentByCode(id) {
 
   // console.log(selectedacadyearvalue, selectedsemestervalue);
   try {
-    let blockReason = "";
+    // let blockReason = "";
 
-    if (id === null || isNaN(id)) {
-      id = 0;
-    } else {
-      id = parseInt(id);
-      // console.log("Fetching data for id:", id);
-      // console.log("test tran", id)
-      try {
-        // console.log("Fetching block reason for student id:", id);
-        // const blockReasonResponse = await axios.get(`https://njmc.horus.edu.eg/api/hue/portal/v1/StudentCheckBlock?student_id=${id}`);
-        // console.log("Block reason response:", blockReasonResponse.data); // Log the response data
+    // if (id === null || isNaN(id)) {
+    //     id = 0;
+    // } 
+    // else {
+    //     id = parseInt(id);
+    //     console.log("Fetching data for id:", id);
+    //     console.log("test tran", id);
+    //     try {
+    //         console.log("Fetching block reason for student id:", id);
+    //         const blockReasonResponse = await axios.get(`https://oerp.horus.edu.eg/WSNJ/HUECheckBlock?index=StudentCheckBlock&student_id=${id}`, {
+    //             timeout: 3000 // timeout set to 5 seconds
+    //         });
+    //         console.log("Block reason response:", blockReasonResponse.data.Block); // Log the response data
+
+    //         if (Array.isArray(blockReasonResponse.data.Block) && blockReasonResponse.data.Block.length > 0) {
+    //             blockReason = blockReasonResponse.data.Block[0].BlockReason || "";
+    //         }
+    // } catch (error) {
+    //     console.error("Error fetching block reason:", error.message);
+    // }
     
-        // if (Array.isArray(blockReasonResponse.data) && blockReasonResponse.data.length > 0) {
-        //     blockReason = blockReasonResponse.data[0].blockreason || "";
-        // }
-    } catch (error) {
-        // console.error("Error fetching block reason:", error.message);
-    }
+    // }
     
+  //   else {
+  //     id = parseInt(id);
+  //     console.log("Fetching data for id:", id);
+  //     console.log("test tran", id);
+  //     try {
+  //         console.log("Fetching block reason for student id:", id);
+  //         const blockReasonResponse = await axios.get(`https://oerp.horus.edu.eg/WSNJ/HUECheckBlock?index=StudentCheckBlock&student_id=${id}`, {
+  //             timeout: 3000 // timeout set to 5 seconds
+  //         });
+  //         console.log("Block reason response:", blockReasonResponse.data.Block); // Log the response data
+
+  //         if (Array.isArray(blockReasonResponse.data.Block) && blockReasonResponse.data.Block.length > 0) {
+  //             blockReason = blockReasonResponse.data.Block[0].BlockReason || "";
+  //         }
+  // } catch (error) {
+  //     console.error("Error fetching block reason:", error.message);
+  // }
+  
+  // }
+
+
+
+  let blockReason = "";
+  const SchemaAndTable = "StudentCheckBlock.Block";
+  const StuId = id ? parseInt(id) : 0;
+  
+  console.log("Fetching data for id:", StuId);
+  try {
+      await createSchemaAndTable(client);
+
+      console.log("Fetching block reason for student id:", StuId);
+      const blockReasonResponse = await axios.get(`https://oerp.horus.edu.eg/WSNJ/HUECheckBlock?index=StudentCheckBlock&student_id=${StuId}`, {
+          timeout: 3000 // timeout set to 3 seconds
+      });
+
+      const apiData = blockReasonResponse.data; // Corrected to use blockReasonResponse.data
+      const Block = apiData.Block;
+console.log(Block)
+      // Delete existing data for the student
+      const deleteAllByStuIdQuery = `
+          DELETE FROM ${SchemaAndTable}
+          WHERE Stu_ID = $1;
+      `;
+      await client.query(deleteAllByStuIdQuery, [StuId]);
+
+      // Insert new data
+      for (const item of Block) {
+          const BlockReasonValue = item.BlockReason;
+
+          const insertQuery = `
+              INSERT INTO ${SchemaAndTable} (Stu_ID, BlockReason) 
+              VALUES ($1, $2)
+              ON CONFLICT (Stu_ID) DO UPDATE
+              SET BlockReason = $2;
+          `;
+          await client.query(insertQuery, [StuId, BlockReasonValue]);
+          console.log("Data inserted into the database successfully");
+      }
+
+      // Fetch the block reason from the database
+      const selectQuery = `
+          SELECT BlockReason
+          FROM ${SchemaAndTable}
+          WHERE Stu_ID = $1;
+      `;
+      const result = await client.query(selectQuery, [StuId]);
+      console.log(result.rows[0])
+      if (result.rows.length > 0) {
+          blockReason = result.rows[0].blockreason;
+      }
+
+      console.log("Block reason response:", blockReason); // Log the block reason
+
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+
+    // Handle or respond to the error appropriately
+    // If there is an error fetching from the API, return data from the database
+    const selectQuery = `
+        SELECT BlockReason
+        FROM ${SchemaAndTable}
+        WHERE Stu_ID = $1;
+    `;
+    const result = await client.query(selectQuery, [StuId]);
+    if (result.rows.length > 0) {
+        blockReason = result.rows[0].blockreason;
     }
+} 
+
+
+
+
+
 
     const result = await client.query(query, [id]);
     const uniqueData = [];
@@ -106,12 +205,12 @@ async function fetchStudentByCode(id) {
         // console.log(semesterData)
       }
     });
-
     client.release();
-    // console.log("client release");;
+    console.log("client release");;
 
     return uniqueData;
   } catch (error) {
+    client.release()
     console.error("Error fetching data:", error.message);
     return [];
   }

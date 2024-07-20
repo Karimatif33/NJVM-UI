@@ -18,10 +18,11 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const cors = require('cors');
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
+const errorHandler = require('./middleware/errorHandler.js');
 require("dotenv").config();
 require("./db/dbConnect.js");
 
-
+app.use(errorHandler);
 const morganStream = {
   write: (message) => {
     // Write the message to the Winston logger
@@ -147,7 +148,7 @@ app.get('*', (req, res) => {
 
 
 const port = 443
-console.log = function () {};
+// console.log = function () {};
 
 
 https.createServer(options, app).listen(port, () => {
