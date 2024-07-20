@@ -50,7 +50,6 @@ async function fetchStudentByCode(id) {
   try {
     // let blockReason = "";
 
-<<<<<<< HEAD
     // if (id === null || isNaN(id)) {
     //     id = 0;
     // } 
@@ -73,26 +72,6 @@ async function fetchStudentByCode(id) {
     // }
     
     // }
-=======
-    if (id === null || isNaN(id)) {
-      id = 0;
-    } else {
-      id = parseInt(id);
-      console.log("Fetching data for id:", id);
-      console.log("test tran", id)
-      try {
-
-        console.log("Fetching block reason for student id:", id);
-        const blockReasonResponse = await axios.get(`https://njmc.horus.edu.eg/api/hue/portal/v1/StudentCheckBlock?student_id=${id}`);
-        console.log("Block reason response:", blockReasonResponse.data); // Log the response data
-    
-        if (Array.isArray(blockReasonResponse.data) && blockReasonResponse.data.length > 0) {
-            blockReason = blockReasonResponse.data[0].blockreason || "";
-        }
-    } catch (error) {
-        console.error("Error fetching block reason:", error.message);
-    }
->>>>>>> 61b650be54fccf9ab1082fa13b2ebdfffb953a92
     
   //   else {
   //     id = parseInt(id);
