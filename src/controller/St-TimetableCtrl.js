@@ -2,10 +2,23 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/StudyTimetableSchema");
+const logger = require("../model/logger");
 
-exports.fetshingStudyTimetable = AsyncHandler(async(req, res) => {
-    const StuId = req.params.StuId;
-  console.log(StuId, "Aa")
+exports.fetshingStudyTimetable = AsyncHandler(async(req, res, next) => {
+    let StuId = req.params.StuId;
+
+    // Check if StuId is null or undefined, and set it to 0 if true
+    if (StuId === null || StuId === undefined) {
+      StuId = 0;
+    } else {
+      // Convert StuId to a number if it's a string or other type
+      StuId = parseInt(StuId, 10);
+      
+      // Check if conversion failed and set to 0 if so
+      if (isNaN(StuId)) {
+        StuId = 0;
+      }
+    }
 
     const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUEStudyTimetable?index=StudyTimetable&student_id=${StuId}`;
 
@@ -100,15 +113,15 @@ exports.fetshingStudyTimetable = AsyncHandler(async(req, res) => {
         }
     } catch (error) {
         const client = await connect();
-        console.error("Error querying data:", error.message);
-
+        logger.error(`Database query error: ${error.message}`);
+        
         const selectQuery = `
       SELECT *
       FROM studytimetable.sessions
       WHERE Stu_ID = $1;
     `;
 
-        const result = await client.query(selectQuery, []);
+        const result = await client.query(selectQuery, [StuId]);
         res.json(result.rows);
         console.log(result.rows,StuId)
         console.log("Getting data from the DB due to an error");
