@@ -67,7 +67,7 @@
   }
   .incoives {
     margin-top: 100px;
-    margin-left: 15px;
+    /* margin-left: 15px; */
   }
 }
 @media screen and (max-width: 600px) {
@@ -100,7 +100,7 @@ gap: 0.1;
 @media screen and (max-width: 600px) {
   .incoives {
     margin-top: 100px;
-    margin-left: 40px;
+    /* margin-left: 40px; */
   }
 }
 @media screen and (max-width: 600px) {
@@ -223,7 +223,13 @@ padding: 0.2rem;
 width: 80%;
   }
 }
+@media screen and (max-width: 900px) {
+  .minMax {
+  min-width: 350px;
+  max-width: 330px;
 
+  }
+}
 #charts_Series_0 rect,
 #charts_Series_1 rect {
   transform: translateX(calc(50% - 25px)); /* Adjust the value as needed */

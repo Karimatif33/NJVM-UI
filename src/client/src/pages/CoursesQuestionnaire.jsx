@@ -176,32 +176,40 @@ import Spinner from "../components/Spinner";
   
   
 
-    const fetchInstructors = (subjectId) => {
-      const subject = subjects.find((subject) => subject.subjectid === subjectId);
-      if (subject) {
-        const mappedInstructors = subject.instructors.map((instructor) => ({
+   const fetchInstructors = (subjectId) => {
+  const subject = subjects.find((subject) => subject.subjectid === subjectId);
+  if (subject) {
+    // Use a Set to track unique instructor IDs
+    const uniqueInstructors = new Map();
+
+    subject.instructors.forEach((instructor) => {
+      if (!uniqueInstructors.has(instructor.Id)) {
+        uniqueInstructors.set(instructor.Id, {
           id: instructor.Id,
           name: instructor.Name,
-          answered: checkIfInstructorAnswered(subjectId, instructor.Id) // Check if instructor is answered
-        }));
-    
-        setInstructors(mappedInstructors); // Update state with mapped instructors
-    
-        // Set the active instructor index to the ID of the first instructor by default
-        const firstInstructor = mappedInstructors[0];
-        if (firstInstructor) {
-          setActiveInstructorIndex(firstInstructor.id);
-        } else {
-          console.warn(`No instructors found for subject with id ${subjectId}`);
-          setActiveInstructorIndex(null); // Optionally set to null or handle accordingly
-        }
-    
-        console.log(mappedInstructors, 'mappedInstructors');
-      } else {
-        console.error(`Subject with id ${subjectId} not found`);
+          answered: checkIfInstructorAnswered(subjectId, instructor.Id)
+        });
       }
-    };
-    
+    });
+
+    const mappedInstructors = Array.from(uniqueInstructors.values());
+
+    setInstructors(mappedInstructors); // Update state with mapped instructors
+
+    // Set the active instructor index to the ID of the first instructor by default
+    const firstInstructor = mappedInstructors[0];
+    if (firstInstructor) {
+      setActiveInstructorIndex(firstInstructor.id);
+    } else {
+      console.warn(`No instructors found for subject with id ${subjectId}`);
+      setActiveInstructorIndex(null); // Optionally set to null or handle accordingly
+    }
+
+    console.log(mappedInstructors, 'mappedInstructors');
+  } else {
+    console.error(`Subject with id ${subjectId} not found`);
+  }
+};
 
 
   
@@ -299,66 +307,80 @@ import Spinner from "../components/Spinner";
           console.error("Error submitting questionnaire:", error)
         );
     };
-
     const handleSubmitInstructor = async () => {
       const formattedOptions = [];
-
+    
       Object.keys(selectedOptionsInstructor).forEach((questionId) => {
-          let optionValue = selectedOptionsInstructor[questionId];
-          if (typeof optionValue === 'object' && optionValue !== null && optionValue.hasOwnProperty('id') && optionValue.hasOwnProperty('text')) {
-              const optionId = optionValue.id;
-              const optionText = optionValue.text;
-              const qusId = Number(questionId);
-
-              formattedOptions.push({
-                  qusId,
-                  id: optionId,
-                  text: optionText,
-              });
-          } else {
-              console.error(`Invalid option value format for question ID ${questionId}: ${optionValue}`);
-          }
+        let optionValue = selectedOptionsInstructor[questionId];
+        if (typeof optionValue === 'object' && optionValue !== null && optionValue.hasOwnProperty('id') && optionValue.hasOwnProperty('text')) {
+          const optionId = optionValue.id;
+          const optionText = optionValue.text;
+          const qusId = Number(questionId);
+    
+          formattedOptions.push({
+            qusId,
+            id: optionId,
+            text: optionText,
+          });
+        } else {
+          console.error(`Invalid option value format for question ID ${questionId}: ${optionValue}`);
+        }
       });
-
+    
       const data = {
-          selectedOptions: formattedOptions,
-          comments: commentsInstructor,
-          type: "instructors",
-          subjectId: selectedSubject.subjectid,
-          instructorId: activeInstructorIndex,
-          courseid: selectedSubject.courseid,
-          userDB: DBUser,
-          userCode: Number(user),
+        selectedOptions: formattedOptions,
+        comments: commentsInstructor,
+        type: "instructors",
+        subjectId: selectedSubject.subjectid,
+        instructorId: activeInstructorIndex,
+        courseid: selectedSubject.courseid,
+        userDB: DBUser,
+        userCode: Number(user),
       };
-
+    
       console.log("Submitting instructor questionnaire...", data);
-
+    
       try {
-          await axios.post("https://njmc.horus.edu.eg/api/hue/portal/v1/SubmitQuestions", data);
-
-          const updatedInstructors = instructors.map((instructor) =>
-            instructor.id === activeInstructorIndex ? { ...instructor, answered: true } : instructor
-          );
-          setInstructors(updatedInstructors);
-          setFetchTrigger((prev) => !prev);
-          // Find the next available instructor to automatically set as active
-          const nextInstructor = updatedInstructors.find((instructor) => !instructor.answered);
-      
-          if (nextInstructor) {
-            setActiveInstructorIndex(nextInstructor.id);
-            clearSelectedOptions();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            setActiveInstructorIndex(null);
-          }
-        
-
-          console.log("Questionnaire submitted successfully!");
-      } catch (error) { 
-          console.error("Error submitting questionnaire:", error);
-          setError("Failed to submit the questionnaire. Please try again later.");
+        await axios.post("https://njmc.horus.edu.eg/api/hue/portal/v1/SubmitQuestions", data);
+    
+        const updatedInstructors = instructors.map((instructor) =>
+          instructor.id === activeInstructorIndex ? { ...instructor, answered: true } : instructor
+        );
+        setInstructors(updatedInstructors);
+        setFetchTrigger((prev) => !prev);
+    
+        // Find the next available instructor to automatically set as active
+        const nextInstructor = updatedInstructors.find((instructor) => !instructor.answered);
+    
+        if (nextInstructor) {
+          setActiveInstructorIndex(nextInstructor.id);
+          clearSelectedOptions();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          setActiveInstructorIndex(null);
+        }
+    
+        console.log("Questionnaire submitted successfully!");
+      } catch (error) {
+        console.error("Error submitting questionnaire:", error);
+        if (error.response) {
+          // The request was made and the server responded with a status code outside the 2xx range
+          console.error('Response data:', error.response.data);
+          console.error('Response status:', error.response.status);
+          console.error('Response headers:', error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('Request data:', error.request);
+        } else {
+          // Something happened in setting up the request
+          console.error('Error message:', error.message);
+        }
+        console.error('Error config:', error.config);
+    
+        setError("Failed to submit the questionnaire. Please try again later.");
       }
-  };
+    };
+    
 
     // useEffect(() => {
     //   // Effect to run when currentInstructorIndex changes

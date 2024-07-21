@@ -57,7 +57,7 @@ const Unbaidinvoices = () => {
           <div className="my-8 ">
             <div
               key={item?.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-2xl max-w-[400px] min-w-[400px]  dark:bg-gray-800 "
+              className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-2xl max-w-[400px] min-w-[400px] dark:bg-gray-800 minMax"
             >
               <div className="p-6 ">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center dark:text-gray-100 ">

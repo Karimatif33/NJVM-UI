@@ -55,7 +55,10 @@ async function fetchStudentByCode(id) {
       console.log("Fetching data for id:", id);
       console.log("test tran", id)
       try {
-
+        /* The line `// console.log("Fetching block reason for student id:", id);` is a commented-out
+        console log statement in the JavaScript code. It is used for debugging purposes to log a
+        message to the console indicating that the block reason for a specific student ID is being
+        fetched. */
         console.log("Fetching block reason for student id:", id);
         const blockReasonResponse = await axios.get(`https://njmc.horus.edu.eg/api/hue/portal/v1/StudentCheckBlock?student_id=${id}`);
         console.log("Block reason response:", blockReasonResponse.data); // Log the response data
