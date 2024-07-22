@@ -13,15 +13,25 @@ const path = require("path");
 const app = express();
 const tabs = require('./server/tabs');
 const jwt = require('jsonwebtoken');
+const querystring = require('querystring');
+const passport = require('passport');
+const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
+const cookieSession = require('cookie-session');
+const session = require('express-session');
 const helmet = require("helmet");
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cors = require('cors');
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/errorHandler.js');
+// const { expressjwt: jwt } = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
+
+
+
 require("dotenv").config();
 require("./db/dbConnect.js");
-
+const configa = require('./config');
 app.use(errorHandler);
 const morganStream = {
   write: (message) => {
@@ -50,6 +60,92 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again after 15 minutes.',
 });
 
+
+
+
+
+// ///////////////////////////
+// Configure express-session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET, // Replace with a secure secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
+
+
+// Initialize Passport and restore authentication state, if any, from the session
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+passport.use(new OIDCStrategy(configa.creds,
+  function(iss, sub, profile, accessToken, refreshToken, done) {
+    console.log('OIDCStrategy callback:');
+    console.log('Issuer:', iss);
+    console.log('Subject:', sub);
+    console.log('Profile:', profile);
+    console.log('Access Token:', accessToken);
+    console.log('Refresh Token:', refreshToken);
+    console.log('ID Token:', params.id_token);
+
+    if (!profile.oid) {
+      return done(new Error("No OID found"), null);
+    }
+    // Store the user profile and tokens in session
+    req.session.userProfile = profile;
+    req.session.accessToken = accessToken;
+    req.session.refreshToken = refreshToken;
+    req.session.idToken = params.id_token;
+    return done(null, profile);
+  }
+));
+
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((obj, done) => {
+  done(null, obj);
+});
+
+// Define routes
+app.get('/login', (req, res, next) => {
+  passport.authenticate('azuread-openidconnect', {
+    failureRedirect: '/'
+  })(req, res, next);
+});
+
+app.post('/auth-end', (req, res, next) => {
+  passport.authenticate('azuread-openidconnect', {
+    failureRedirect: '/'
+  })(req, res, next, () => {
+    res.redirect('/');
+  });
+});
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
+
+
+// Route to handle authentication
+app.post('/api/auth', (req, res) => {
+  const userData = req.user; // Extracted user data from the token
+
+  console.log('User data from token:', userData); // Debug log
+
+  res.status(200).json({
+    message: 'Token is valid and user data is extracted',
+    userData: userData
+  });
+});
+
+
+// ////////////////////
+
 // Apply the rate limiting middleware to all requests
 // app.use(limiter);
 
@@ -72,32 +168,6 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 
 
-// Axios configuration
-// const axiosInstance = axios.create({
-//   httpsAgent: httpsAgent,
-//   baseURL: 'https://njmc.horus.edu.eg', // Base URL for the API
-//   headers: {
-//     'Accept': 'application/json, text/plain, */*'
-//   },
-//   transitional: {
-//     silentJSONParsing: true,
-//     forcedJSONParsing: true,
-//     clarifyTimeoutError: false
-//   },
-//   adapter: ['xhr', 'http', 'fetch'],
-//   transformRequest: [null],
-//   transformResponse: [null],
-//   timeout: 0,
-//   xsrfCookieName: 'XSRF-TOKEN',
-//   xsrfHeaderName: 'X-XSRF-TOKEN',
-//   maxContentLength: -1,
-//   maxBodyLength: -1,
-// });
-
-// const proxy = createProxyMiddleware({
-//   target: 'http://localhost:3000',  // Your React development server URL
-//   changeOrigin: true,
-// });
 
 
 // Read your SSL certificate files
@@ -112,29 +182,33 @@ const options = {
 
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(cors());
-app.use(helmet());
-// app.use(helmet({
-//   contentSecurityPolicy: false, 
-//   // xssFilter: false,
-//   hidePoweredBy: true,
-//   noSniff: true,
-//   referrerPolicy: false, 
-//   frameguard: false,
-// }));
+// app.use(cors());
+// app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      connectSrc: ["'self'", "https://login.microsoftonline.com"],
+      // Add other CSP directives as needed
+    },
+  },
+}));
 
 // Set the view engine to EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(cors({
+  origin: 'https://njmc.horus.edu.eg',
+  allowedHeaders: ['Authorization', 'Content-Type'], // Explicitly allow the Authorization header
+  credentials: true // If you are using cookies or credentials
+}));
+
 // Routes
 app.use("/api/hue/portal/v1", AllRoutes);
 app.use("/api/hue/portal/v1", UiRoutes);
 
-// module.exports = app;
 
-// Import routes for handling tabs
-// Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Catch all other routes and return the React app

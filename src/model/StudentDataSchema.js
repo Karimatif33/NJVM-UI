@@ -15,6 +15,7 @@ const createTableQuery = `
     NationalID VARCHAR(500),
     FacultyID INTEGER,
     CourseID INTEGER,
+    IsAdmin BOOLEAN NOT NULL,
     CONSTRAINT fk_course FOREIGN KEY (CourseID) REFERENCES CourseData.courses(id),
     CONSTRAINT fk_acad_year FOREIGN KEY (FacultyID) REFERENCES FacultyData.facultydata(id)
   );

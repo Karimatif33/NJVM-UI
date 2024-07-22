@@ -30,6 +30,7 @@ const { fetshingQuestionsData } = require("../controller/QuestionsData-Ctr");
 const { fetshingCatQuesServData } = require("../controller/Cat-QuesServData-Ctr");
 const { fetshingCatQuesTypeData } = require("../controller/Cat-QuesTypeData-Ctr");
 const { PostQust } = require("../controller/PostQust");
+const { AuthReq } = require("../controller/AuthReq");
 
 
 const AllRoutes = express.Router();
@@ -64,5 +65,6 @@ AllRoutes.get("/CatQuesServData", fetshingCatQuesServData);
 AllRoutes.get("/CatQuesTypeData", fetshingCatQuesTypeData);
 AllRoutes.post("/SubmitQuestions", PostQust);
 
+AllRoutes.post("/auth", AuthReq);
 
 module.exports = AllRoutes;

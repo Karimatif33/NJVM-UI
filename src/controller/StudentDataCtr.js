@@ -33,13 +33,14 @@ exports.fetshingStudentData = AsyncHandler(async (req, res) => {
         const FacultyIDValue = item.FacultyID;
         const CourseIDValue = item.CourseID;
         const StuNameValue = item.enName;
+        const IsAdmin = false
 
         // console.log(nameValue, IDValue);
 
         // Insert data into the database (replace 'Levels' with your actual table name)
         const insertQuery = `
-          INSERT INTO ${SchemaAndTable} (ID, enName, Code, NationalID, FacultyID, CourseID, StuName) 
-          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          INSERT INTO ${SchemaAndTable} (ID, enName, Code, NationalID, FacultyID, CourseID, StuName, IsAdmin) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
           ON CONFLICT (ID) DO UPDATE
           SET 
           enName = $2,
@@ -47,7 +48,8 @@ exports.fetshingStudentData = AsyncHandler(async (req, res) => {
           NationalID = $4,
           FacultyID = $5,
           CourseID = $6,
-          StuName = $7
+          StuName = $7,
+          IsAdmin = $8
       `;
 
         await client.query(insertQuery, [
@@ -58,6 +60,7 @@ exports.fetshingStudentData = AsyncHandler(async (req, res) => {
           FacultyIDValue,
           CourseIDValue,
           StuNameValue,
+          IsAdmin,
         ]);
         console.log("Data inserted into the database successfully");
       }

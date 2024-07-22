@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import axios from 'axios'; 
+import { useMsal, useIsAuthenticated } from '@azure/msal-react';
+import { loginRequest } from './authConfig';
 import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Toaster } from "react-hot-toast";
@@ -47,16 +49,90 @@ import ServicesQuestionnaire from "./pages/ServicesQuestionnaire";
 import SsoDemo from "./pages/ssoDemo";
 
 const App = () => {
-  // const { instance, accounts } = useMsal();
-  // console.log(instance, accounts,"aa ")
+  const { instance, accounts } = useMsal();
+  const isAuthenticated = useIsAuthenticated();
+console.log(accounts)
 
-  // useEffect(() => {
-  //   if (accounts.length === 0) {
-  //     instance.loginPopup().catch(e => {
-  //       console.error(e);
-  //     });
-  //   }
-  // }, [instance, accounts]);
+useEffect(() => {
+  const handleAuthRedirect = async () => {
+    try {
+      // Handle redirect response from MSAL
+      const response = await instance.handleRedirectPromise();
+      if (response) {
+        const account = response.account;
+        const Email = account.username
+        const Name = account.name
+        console.log('Email :', Email);
+        console.log('Name :', Name);
+
+        // Set the active account
+        instance.setActiveAccount(account);
+
+        // Acquire token silently
+        const tokenResponse = await instance.acquireTokenSilent(loginRequest);
+        console.log('Access Token:', tokenResponse.accessToken);
+        
+        // Send token to backend
+        await sendTokenToBackend(tokenResponse.accessToken, Email, Name);
+      }
+    } catch (error) {
+      console.error('Error handling authentication redirect:', error);
+    }
+  };
+
+  handleAuthRedirect();
+}, [instance, accounts]);
+
+  const sendTokenToBackend = async (accessToken, email, name) => {
+    try {
+      console.log('Sending token:', accessToken); // Log token to check
+      const response = await axios.post('https://njmc.horus.edu.eg/api/auth', null, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // Add other headers if needed
+          Email: email,  // Ensure these variables are passed correctly
+          Name: name,
+        }
+      });
+      console.log('Token sent to backend successfully', response);
+    } catch (error) {
+      console.error('Error sending token to backend:', error);
+    }
+  };
+
+
+  const handleLogin = () => {
+    instance.loginRedirect(loginRequest).catch(error => console.error('Login failed:', error));
+  };
+
+  const handleLogout = () => {
+    instance.logoutRedirect();
+  };
+
+
+  const fetchUserProfile = async () => {
+    const account = accounts[0];
+    if (!account) return;
+
+    try {
+      const response = await instance.acquireTokenSilent({
+        ...loginRequest,
+        account: account
+      });
+
+      const headers = new Headers();
+      headers.append('Authorization', `Bearer ${response.accessToken}`);
+
+      const userProfile = await fetch(graphConfig.graphMeEndpoint, { headers });
+      const userData = await userProfile.json();
+      console.log(userData);
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error);
+    }
+  };
+
+
+
   const {
     activeMenu,
     themeSettings,
@@ -102,7 +178,17 @@ const App = () => {
             <div className="fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full ">
               <Navbar />
             </div>
-
+   <div>
+      {isAuthenticated ? (
+        <div>
+          <p>Welcome, {accounts[0]?.name}</p>
+          <button onClick={handleLogout}>Logout</button>
+          <button onClick={fetchUserProfile}>Fetch Profile</button>
+        </div>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
+    </div>
             <div className="">
               <Routes>
               <Route path="*" element={<Dashboard />} />

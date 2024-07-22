@@ -4,6 +4,10 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import { ContextProvider } from "./context/ContextProvider";
+import { PublicClientApplication } from '@azure/msal-browser';
+import { MsalProvider } from '@azure/msal-react';
+import { msalConfig } from './authConfig';
+const pca = new PublicClientApplication(msalConfig);
 
 // In your index.js or App.js (or any entry point of your React app)
 if ('serviceWorker' in navigator) {
@@ -20,8 +24,10 @@ if ('serviceWorker' in navigator) {
 
 
 ReactDOM.render(
+  <MsalProvider instance={pca}>
     <ContextProvider>
       <App />
-    </ContextProvider>,
+    </ContextProvider>
+    </MsalProvider>,
   document.getElementById("root")
 );

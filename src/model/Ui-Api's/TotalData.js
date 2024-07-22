@@ -11,6 +11,7 @@ async function fetchDataByIdFromDB(code) {
       totaldata.totals_data.updatedat,
       studentcheckblock.block.blockreason,
       StudentData.students.code AS code, 
+      StudentData.students.isadmin AS isadmin, 
       StudentData.students.enname AS student_name, 
       StudentData.students.courseid AS courseid,
       StaffData.staff.name AS staff_name,
@@ -37,6 +38,7 @@ async function fetchDataByIdFromDB(code) {
       
     }
     const result = await client.query(query, [code]);
+    console.log(result)
     const dataWithDefaults = result.rows.map((row) => {
       const credithours = row.credithours || 0; // Default to 0 if undefined
       const hours = row.hours || 0; // Default to 0 if undefined
@@ -50,6 +52,7 @@ async function fetchDataByIdFromDB(code) {
         advisor: row.advisor,
         updatedat: row.updatedat,
         code: row.code,
+        IsAdmin: row.isadmin,
         student_name: row.student_name || "Unknown",
         course_id: row.courseid,
         staff_name: row.staff_name || "Unknown Staff",
