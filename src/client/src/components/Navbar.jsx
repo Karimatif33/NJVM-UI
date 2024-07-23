@@ -96,8 +96,7 @@ export const Navbar = () => {
           >
 {/* <ThemeToggle/> */}
 {/* <UseSwitchesCustom/> */}
-      {StuName !== ""
-              ? user && (
+  
                   <>
                    <p className="font-semibold dark:font-light dark:text-gray-300">
                        ({" "}
@@ -123,7 +122,7 @@ export const Navbar = () => {
                       </span>
                     </p>
                   </>
-              ) : "" }
+            
              
           </div>
 

@@ -9,7 +9,7 @@ import LineChart from "../components/Charts/LineChart";
 import Pie from "../components/Charts/Pie";
 function Dashboard() {
   const [students, setStudents] = useState([]);
-  const { user, setDBUser, setUser, DBUser, StuName, setStuName, setCurrCourseId } =
+  const { user, setDBUser, setUser, DBUser, StuName, setStuName, setCurrCourseId, setIsAdmin } =
     useStateContext();
   const [showComponent, setShowComponent] = useState(false);
   useEffect(() => {
@@ -52,14 +52,16 @@ function Dashboard() {
           const courseName = firstItem.Course; // Replace 'Course' with the actual property name
           const EngName = firstItem.student_name;
           const CourseId = firstItem.course_id;
-
+          const role = firstItem.IsAdmin;
           // Log the values
           console.log("UserID:", userId);
           console.log("Course Name:", courseName);
           console.log("EngName:", EngName);
-          console.log("CourseId:", CourseId);
+          console.log("CourseId:", CourseId)
+          console.log("Role:", role);
+          ;
           setCurrCourseId(CourseId);
-          setStuName(EngName);
+          // setStuName(EngName);
           setDBUser(userId);
           localStorage.setItem("userId", userId);
         } else {

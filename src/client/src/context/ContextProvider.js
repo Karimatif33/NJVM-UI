@@ -13,7 +13,7 @@ export const ContextProvider = ({ children }) => {
   const [screenSize, setScreenSize] = useState(undefined);
   const [activeMenu, setActiveMenu] = useState(true);
   const [isClicked, setIsClicked] = useState({});
-  const [IsAdmin, setIsAdmin] = useState(true);
+  const [IsAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
   const [DBUser, setDBUser] = useState(null);
   // const [currentcolor, setCurrentColor] = useState("#03C9D7");

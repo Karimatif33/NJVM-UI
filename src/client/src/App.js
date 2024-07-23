@@ -47,52 +47,111 @@ import SubjectResult from "./pages/SubjectResult";
 import CoursesQuestionnaire from "./pages/CoursesQuestionnaire";
 import ServicesQuestionnaire from "./pages/ServicesQuestionnaire";
 import SsoDemo from "./pages/ssoDemo";
-
 const App = () => {
+  const {
+    activeMenu,
+    themeSettings,
+    setThemeSettings,
+    currentcolor,
+    currentMode,
+    setUser,
+    setStuName,
+    setIsAdmin,
+    user,
+  } = useStateContext();
   const { instance, accounts } = useMsal();
   const isAuthenticated = useIsAuthenticated();
-console.log(accounts)
 
-useEffect(() => {
-  const handleAuthRedirect = async () => {
-    try {
-      // Handle redirect response from MSAL
-      const response = await instance.handleRedirectPromise();
-      if (response) {
-        const account = response.account;
-        const Email = account.username
-        const Name = account.name
-        console.log('Email :', Email);
-        console.log('Name :', Name);
+  useEffect(() => {
+    const handleAuthRedirect = async () => {
+      try {
+        // Handle redirect response from MSAL
+        const response = await instance.handleRedirectPromise();
+        if (response) {
+          const account = response.account;
+          const email = account.username;
+          const name = account.name;
 
-        // Set the active account
-        instance.setActiveAccount(account);
+          // Extract username part from email
+          const username = email.split('@')[0];
+          
+          // Determine user ID based on username
+          let userId;
+          if (username === 'katif') {
+            userId = 2209;
+           
+          } else if (username === 'mzedan') {
+            userId = 2290;
+          } else {
+            userId = username; // Or handle other usernames appropriately
+          }   setUser(username)
+          setStuName(name);
+          console.log('Email:', email);
+          console.log('Username:', userId); // This is the part before '@'
+          console.log('Name:', name);
 
-        // Acquire token silently
-        const tokenResponse = await instance.acquireTokenSilent(loginRequest);
-        console.log('Access Token:', tokenResponse.accessToken);
-        
-        // Send token to backend
-        await sendTokenToBackend(tokenResponse.accessToken, Email, Name);
+          // Set the active account
+          instance.setActiveAccount(account);
+
+          // Acquire token silently
+          const tokenResponse = await instance.acquireTokenSilent(loginRequest);
+          console.log('Access Token:', tokenResponse.accessToken);
+          
+          // Send token to backend
+          await sendTokenToBackend(tokenResponse.accessToken, username, name);
+          await fetchData(userId)
+        }
+      } catch (error) {
+        console.error('Error handling authentication redirect:', error);
       }
-    } catch (error) {
-      console.error('Error handling authentication redirect:', error);
     }
-  };
+    const fetchData = async (userId) => {
+      
+      try {
+        const response = await axios.get(
+          `https://njmc.horus.edu.eg/api/hue/portal/v1/uiTotalsData/${userId}`
+        );
+        const data = response.data; // Axios already parses the response to JSON
 
-  handleAuthRedirect();
-}, [instance, accounts]);
+        // Check if the array has at least one item
+        if (data.length > 0) {
+          const firstItem = data[0];
+          // Access properties from the first item
+          const role = firstItem.IsAdmin;
+          setIsAdmin(role)
+          // Log the values
 
-  const sendTokenToBackend = async (accessToken, email, name) => {
+          console.log("Role from app", role);
+          ;
+        } else {
+          console.error("Empty array in the response data");
+        }
+      }  catch (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          console.error('Server responded with status code:', error.response.status);
+          console.error('Response data:', error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('No response received:', error.request);
+        } else {
+          // Something happened in setting up the request that triggered an error
+          console.error('Error setting up request:', error.message);
+        }
+      }
+    };
+
+    handleAuthRedirect().then(() => fetchData());
+  }, [instance, accounts]);
+
+  const sendTokenToBackend = async (accessToken, username, name) => {
     try {
-      console.log('Sending token:', accessToken); // Log token to check
       const response = await axios.post('https://njmc.horus.edu.eg/api/auth', null, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          // Add other headers if needed
-          Email: email,  // Ensure these variables are passed correctly
+          Username: username,
           Name: name,
-        }
+        },
       });
       console.log('Token sent to backend successfully', response);
     } catch (error) {
@@ -110,36 +169,10 @@ useEffect(() => {
   };
 
 
-  const fetchUserProfile = async () => {
-    const account = accounts[0];
-    if (!account) return;
-
-    try {
-      const response = await instance.acquireTokenSilent({
-        ...loginRequest,
-        account: account
-      });
-
-      const headers = new Headers();
-      headers.append('Authorization', `Bearer ${response.accessToken}`);
-
-      const userProfile = await fetch(graphConfig.graphMeEndpoint, { headers });
-      const userData = await userProfile.json();
-      console.log(userData);
-    } catch (error) {
-      console.error('Failed to fetch user profile:', error);
-    }
-  };
 
 
 
-  const {
-    activeMenu,
-    themeSettings,
-    setThemeSettings,
-    currentcolor,
-    currentMode,
-  } = useStateContext();
+ 
 
   return (
     
@@ -182,8 +215,9 @@ useEffect(() => {
       {isAuthenticated ? (
         <div>
           <p>Welcome, {accounts[0]?.name}</p>
+         
+
           <button onClick={handleLogout}>Logout</button>
-          <button onClick={fetchUserProfile}>Fetch Profile</button>
         </div>
       ) : (
         <button onClick={handleLogin}>Login</button>

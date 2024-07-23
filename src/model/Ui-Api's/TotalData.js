@@ -26,19 +26,37 @@ async function fetchDataByIdFromDB(code) {
     LEFT JOIN Levels.levels ON totaldata.totals_data.level = Levels.levels.id
     WHERE StudentData.students.code = $1;
   `;
-
+  const queryAdmin = `
+  SELECT 
+    code AS code, 
+    isadmin AS isadmin, 
+    enname AS student_name
+  FROM StudentData.students
+  WHERE code = $1;
+`;
   try {
     const client = await pool.connect();
+    // Validate and parse the code
     if (code === null || isNaN(code)) {
-      code = 0;
-    }
-    else {
-      code = parseInt(code);
+      code = 0; // Default value or handle the invalid case
+    } else {
+      code = parseInt(code, 10); // Convert to integer
       console.log("Fetching data for id:", code);
-      
     }
-    const result = await client.query(query, [code]);
-    console.log(result)
+
+    // Convert code to string to check its length
+    const codeStr = code.toString();
+    
+    let result;
+    if (codeStr.length === 7 && /^\d+$/.test(codeStr)) {
+      // Code is 7 digits long
+      result = await client.query(query, [code]);
+    } else {
+      // Code is not 7 digits long
+      result = await client.query(queryAdmin, [code]);
+    }
+
+    // console.log(result)
     const dataWithDefaults = result.rows.map((row) => {
       const credithours = row.credithours || 0; // Default to 0 if undefined
       const hours = row.hours || 0; // Default to 0 if undefined
@@ -53,11 +71,11 @@ async function fetchDataByIdFromDB(code) {
         updatedat: row.updatedat,
         code: row.code,
         IsAdmin: row.isadmin,
-        student_name: row.student_name || "Unknown",
+        student_name: row.student_name || "",
         course_id: row.courseid,
-        staff_name: row.staff_name || "Unknown Staff",
-        Course: row.course || "Unknown Course",
-        levelname: row.levelname || "Unknown levelName",
+        staff_name: row.staff_name || "",
+        Course: row.course || "",
+        levelname: row.levelname || "",
         credithours: credithours,
         neededHours: neededHours,
         blockreason: row.blockreason || ""
