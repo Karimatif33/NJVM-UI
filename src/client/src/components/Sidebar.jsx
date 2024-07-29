@@ -36,7 +36,7 @@ export const Sidebar = () => {
               className="items-center gap-3 ml-[2px] mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
             >
         <span className="w-[170px] ml-[45px]">
-              <img src={HUELogoMainSidebar} alt="MC" />
+              <img src={HUELogoMainSidebar} alt="HUE" />
               </span>
               {/* <span>HUE</span> */}
             </Link>
@@ -83,17 +83,23 @@ export const Sidebar = () => {
             {!IsAdmin &&
               links_Stu.map((item) => (
                 <div key={item.title}>
-                  <p className="text-gray-400 m-3 mt-4 uppercase"></p>
+                  <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
+                    {item.title}
+                    {/* {console.log(item)} */}
+                  </p>
                   {item.links.map((link) => (
                     <NavLink
                       to={`./${link.path}`}
                       key={link.name}
                       onClick={handleCloseSideBar}
+                      style={({ isActive }) => ({
+                        backgroundColor: isActive ? currentcolor : "",
+                      })}
                       className={({ isActive }) =>
                         isActive ? activeLink : normalLink
                       }
                     >
-                      {link.icon}{" "}
+                      {link.icon}
                       <span className="capitalize">{link.name}</span>
                     </NavLink>
                   ))}

@@ -2,10 +2,10 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/StuFeesDataSchema");
-
+require("dotenv").config();
 exports.fetshingStuFeesData = AsyncHandler(async (req, res) => {
   const StuId = req.params.StuId;
-  const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUEStuFees?index=StuFeesData&student_id=${StuId}`;
+  const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUEStuFees?index=StuFeesData&student_id=${StuId}`;
   const client = await connect();
 
   try {
@@ -39,7 +39,7 @@ exports.fetshingStuFeesData = AsyncHandler(async (req, res) => {
       return res.json({ message: "There is no Invoices Unpaid" });
     } else {
       const SchemaAndTable = "StuFeesData.invoices_data";
-      
+
       const deleteAllByStuIdQuery = `
       DELETE FROM ${SchemaAndTable}
       WHERE Stu_ID = $1;
@@ -108,7 +108,7 @@ exports.fetshingStuFeesData = AsyncHandler(async (req, res) => {
   FROM StuFeesData.invoices_data
   WHERE Stu_ID = $1;
 `;
-console.log("Getting data from the DB ");
+    console.log("Getting data from the DB ");
     const result = await client.query(selectQuery, [StuId]);
     if (result.rows.length > 0) {
       const feeMessageValue = result.rows[0].feemessage;

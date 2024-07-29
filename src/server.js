@@ -12,25 +12,22 @@ const fs = require("fs");
 const path = require("path");
 const app = express();
 const tabs = require('./server/tabs');
-const jwt = require('jsonwebtoken');
-const jwksClient = require('jwks-rsa');
-const querystring = require('querystring');
+const crypto = require('crypto');
 const passport = require('passport');
 const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
-const cookieSession = require('cookie-session');
 const session = require('express-session');
+const querystring = require('querystring');
+const fetch = require('node-fetch');
+
 const helmet = require("helmet");
-const { createProxyMiddleware } = require('http-proxy-middleware');
 const cors = require('cors');
-const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/errorHandler.js');
 // const { expressjwt: jwt } = require('express-jwt');
-
-
-
 require("dotenv").config();
 require("./db/dbConnect.js");
+
+
 const configa = require('./config');
 app.use(errorHandler);
 const morganStream = {
@@ -59,157 +56,43 @@ const limiter = rateLimit({
   },
   message: 'Too many requests from this IP, please try again after 15 minutes.',
 });
+// app.use(limiter);
 
 
 
 
 
-// ///////////////////////////
-// Configure express-session middleware
-// app.use(session({
-//   secret: process.env.SESSION_SECRET, // Replace with a secure secret key
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: { secure: false } // Set to true if using HTTPS
-// }));
-
-
-// // Initialize Passport and restore authentication state, if any, from the session
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-
-// passport.use(new OIDCStrategy(configa.creds,
-//   function(iss, sub, profile, accessToken, refreshToken, done) {
-//     console.log('OIDCStrategy callback:');
-//     console.log('Issuer:', iss);
-//     console.log('Subject:', sub);
-//     console.log('Profile:', profile);
-//     console.log('Access Token:', accessToken);
-//     console.log('Refresh Token:', refreshToken);
-//     console.log('ID Token:', params.id_token);
-
-//     if (!profile.oid) {
-//       return done(new Error("No OID found"), null);
-//     }
-//     // Store the user profile and tokens in session
-//     req.session.userProfile = profile;
-//     req.session.accessToken = accessToken;
-//     req.session.refreshToken = refreshToken;
-//     req.session.idToken = params.id_token;
-//     return done(null, profile);
-//   }
-// ));
-
-
-// passport.serializeUser((user, done) => {
-//   done(null, user);
-// });
-
-// passport.deserializeUser((obj, done) => {
-//   done(null, obj);
-// });
-
-// // Define routes
-// app.get('/login', (req, res, next) => {
-//   passport.authenticate('azuread-openidconnect', {
-//     failureRedirect: '/'
-//   })(req, res, next);
-// });
-
-// app.post('/auth-end', (req, res, next) => {
-//   passport.authenticate('azuread-openidconnect', {
-//     failureRedirect: '/'
-//   })(req, res, next, () => {
-//     res.redirect('/');
-//   });
-// });
-
-// app.get('/logout', (req, res) => {
-//   req.logout();
-//   res.redirect('/');
-// });
-// const client = jwksClient({
-//   jwksUri: 'https://login.microsoftonline.com/common/discovery/keys'
-// });
-
-// function getKey(header, callback) {
-//   client.getSigningKey(header.kid, function (err, key) {
-//     const signingKey = key.publicKey || key.rsaPublicKey;
-//     callback(null, signingKey);
-//   });
-// }
-
-// const verifyToken = (token) => {
-//   return new Promise((resolve, reject) => {
-//     jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err, decoded) => {
-//       if (err) {
-//         return reject(err);
-//       }
-//       resolve(decoded);
-//     });
-//   });
-// };
 
 
 
-// const ensureAuthenticated = (req, res, next) => {
-//   // Check if the request has a valid token or session
-//   const token = req.headers['authorization']?.split(' ')[1];
-  
-//   if (!token) {
-//     // Redirect to login page if not authenticated
-//     // The login URL here should be your SSO or OAuth provider's login URL
-//     const loginUrl = `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/authorize`;
-//     const redirectUri = encodeURIComponent('https://njmc.horus.edu.eg/auth-end'); // Adjust as needed
-//     const clientId = process.env.AZURE_AD_CLIENT_ID; // Your app's client ID
-//     const responseType = 'token'; // Change to 'code' for authorization code flow
-//     const scope = ['openid', 'profile', 'email']
-
-//     res.redirect(`${loginUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`);
-//   } else {
-//     // Token is present, verify it and proceed
-//     // Here you can verify the token, e.g., using JWT verification
-//     // Assuming a function `verifyToken` exists for token verification
-//     verifyToken(token)
-//       .then(() => next())
-//       .catch(() => res.redirect('/login')); // Redirect if token verification fails
-//   }
-// };
-
-// // Dummy function to verify token (replace with actual token verification logic)
-// const verifyToken = async (token) => {
-//   // Here you would typically verify the token with your authentication provider
-//   // For example:
-//   // return axios.post('https://your-auth-provider/verify', { token });
-//   return new Promise((resolve, reject) => {
-//     if (token === 'valid-token') {
-//       resolve();
-//     } else {
-//       reject();
-//     }
-//   });
-// };
-
-// app.use('/', ensureAuthenticated);
 
 
-
+const verifyToken = async (token) => {
+  // Replace this with your actual token verification logic
+  // and return user information extracted from the token
+  return {
+    email: 'Username', // Extracted email from the token
+    name: 'Name',
+    Authorization: 'Authorization',          // Extracted name from the token
+              // Extracted name from the token
+  };
+};
 
 app.post('/api/auth', async (req, res) => {
-  const token = req.headers['authorization'].split(' ')[1];
-  const email = req.headers['email'];
+  const token = req.headers['authorization']?.split(' ')[1]; // Extract Bearer token
+  const username = req.headers['username'];
   const name = req.headers['name'];
-  const userId = req.headers['userid'];
+
+  if (!token || !username || !name) {
+    return res.status(400).json({ error: 'Missing token or user information' });
+  }
 
   try {
-    const decoded = await verifyToken(token);
-    console.log('Decoded token:', decoded);
+    // Verify token and extract user info
+    const { email } = await verifyToken(token);
+    const userId = username; // Assuming username is the userId for simplicity
 
-    // Extract the username from the email
-    const username = email.split('@')[0];
-
-    // Determine user role based on ID type
+    // Determine user role based on userId
     let role = 'unknown';
     if (/^\d+$/.test(userId)) {
       role = 'student';
@@ -226,31 +109,18 @@ app.post('/api/auth', async (req, res) => {
         email,
         userId,
         role,
+        token,
       },
     });
   } catch (err) {
     console.error('Token verification failed:', err);
-    res.sendStatus(403);
+    res.sendStatus(403); // Forbidden
   }
 });
 
-// Route to handle authentication
-// app.post('/api/auth', (req, res) => {
-//   const userData = req.user; // Extracted user data from the token
-
-//   console.log('User data from token:', userData); // Debug log
-
-//   res.status(200).json({
-//     message: 'Token is valid and user data is extracted',
-//     userData: userData
-//   });
-// });
 
 
-// ////////////////////
 
-// Apply the rate limiting middleware to all requests
-// app.use(limiter);
 
 // Set up Morgan middleware with the custom stream
 app.use(morgan("combined", { stream: morganStream }));
@@ -285,8 +155,9 @@ const options = {
 
 app.use(bodyParser.json());
 app.use(express.json());
-// app.use(cors());
-// app.use(helmet());
+
+
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -320,11 +191,41 @@ app.get('*', (req, res) => {
 });
 
 
-// tabs.setup(app);
+
+app.post('/getProfileOnBehalfOf', async (req, res) => {
+  const token = req.body.token;
+  const authHeader = req.headers['authorization'];
+console.log(token,authHeader)
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(400).json({ error: 'Authorization header missing or invalid' });
+  }
+
+  try {
+      const profileResponse = await axios.get('https://graph.microsoft.com/v1.0/me', {
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      });
+
+      res.json(profileResponse.data);
+      console.log(profileResponse.data)
+  } catch (error) {
+      console.error('Error fetching profile:', error);
+      res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
 
 
+console.log("Before setup call");
+tabs.setup(app);
+console.log("After setup call");
 
-const port = 443
+app.use((req, res, next) => {
+  console.log(`Received request: ${req.method} ${req.url}`);
+  next();
+});
+
+const port = process.env.PORT
 // console.log = function () {};
 
 

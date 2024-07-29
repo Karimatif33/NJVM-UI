@@ -8,11 +8,7 @@ import { useStateContext } from '../context/ContextProvider';
 export const StudentsPull = () => {
   const navigate = useNavigate();
   const { DBUser } = useStateContext();
-  useEffect(() => {
-    if (DBUser === null) {
-      navigate("/dashboard");
-    }
-  }, [DBUser, navigate]);
+
 
   return (
     <div className="mt-[100px] drop-shadow-xl ">

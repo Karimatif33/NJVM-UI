@@ -6,6 +6,14 @@ import { loginRequest } from './authConfig';
 import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Toaster } from "react-hot-toast";
+import { MsalProvider } from "@azure/msal-react";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { msalConfig } from "./authConfig"; 
+
+
+const msalInstance = new PublicClientApplication(msalConfig);
+
+
 // import { useMsal } from "@azure/msal-react";
 import { Navbar, Footer, Sidebar } from "./components";
 import {
@@ -47,7 +55,11 @@ import SubjectResult from "./pages/SubjectResult";
 import CoursesQuestionnaire from "./pages/CoursesQuestionnaire";
 import ServicesQuestionnaire from "./pages/ServicesQuestionnaire";
 import SsoDemo from "./pages/ssoDemo";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Unauthorized from "./pages/Unauthorized";
+import AuthComponent from './AuthComponent';
 const App = () => {
+
   const {
     activeMenu,
     themeSettings,
@@ -58,115 +70,18 @@ const App = () => {
     setStuName,
     setIsAdmin,
     user,
+    IsAdmin
   } = useStateContext();
-  const { instance, accounts } = useMsal();
-  const isAuthenticated = useIsAuthenticated();
-
-  useEffect(() => {
-    const handleAuthRedirect = async () => {
-      try {
-        // Handle redirect response from MSAL
-        const response = await instance.handleRedirectPromise();
-        if (response) {
-          const account = response.account;
-          const email = account.username;
-          const name = account.name;
-
-          // Extract username part from email
-          const username = email.split('@')[0];
-          
-          // Determine user ID based on username
-          let userId;
-          if (username === 'katif') {
-            userId = 2209;
-           
-          } else if (username === 'mzedan') {
-            userId = 2290;
-          } else {
-            userId = username; // Or handle other usernames appropriately
-          }   setUser(username)
-          setStuName(name);
-          console.log('Email:', email);
-          console.log('Username:', userId); // This is the part before '@'
-          console.log('Name:', name);
-
-          // Set the active account
-          instance.setActiveAccount(account);
-
-          // Acquire token silently
-          const tokenResponse = await instance.acquireTokenSilent(loginRequest);
-          console.log('Access Token:', tokenResponse.accessToken);
-          
-          // Send token to backend
-          await sendTokenToBackend(tokenResponse.accessToken, username, name);
-          await fetchData(userId)
-        }
-      } catch (error) {
-        console.error('Error handling authentication redirect:', error);
-      }
-    }
-    const fetchData = async (userId) => {
-      
-      try {
-        const response = await axios.get(
-          `https://njmc.horus.edu.eg/api/hue/portal/v1/uiTotalsData/${userId}`
-        );
-        const data = response.data; // Axios already parses the response to JSON
-
-        // Check if the array has at least one item
-        if (data.length > 0) {
-          const firstItem = data[0];
-          // Access properties from the first item
-          const role = firstItem.IsAdmin;
-          setIsAdmin(role)
-          // Log the values
-
-          console.log("Role from app", role);
-          ;
-        } else {
-          console.error("Empty array in the response data");
-        }
-      }  catch (error) {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          console.error('Server responded with status code:', error.response.status);
-          console.error('Response data:', error.response.data);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.error('No response received:', error.request);
-        } else {
-          // Something happened in setting up the request that triggered an error
-          console.error('Error setting up request:', error.message);
-        }
-      }
-    };
-
-    handleAuthRedirect().then(() => fetchData());
-  }, [instance, accounts]);
-
-  const sendTokenToBackend = async (accessToken, username, name) => {
-    try {
-      const response = await axios.post('https://njmc.horus.edu.eg/api/auth', null, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Username: username,
-          Name: name,
-        },
-      });
-      console.log('Token sent to backend successfully', response);
-    } catch (error) {
-      console.error('Error sending token to backend:', error);
-    }
-  };
 
 
-  const handleLogin = () => {
-    instance.loginRedirect(loginRequest).catch(error => console.error('Login failed:', error));
-  };
 
-  const handleLogout = () => {
-    instance.logoutRedirect();
-  };
+  // const handleLogin = () => {
+  //   instance.loginRedirect(loginRequest).catch(error => console.error('Login failed:', error));
+  // };
+
+  // const handleLogout = () => {
+  //   instance.logoutRedirect();
+  // };
 
 
 
@@ -175,11 +90,11 @@ const App = () => {
  
 
   return (
-    
+    // <MsalProvider instance={msalInstance}>
     <div className={currentMode === "Dark" ? "dark" : ""}>
       {themeSettings && <ThemeSettings />}
       <BrowserRouter>
-      <div className="flex relative dark:bg-main-dark-bg font-cairo ">
+      <div className="flex relative dark:bg-main-dark-bg font-cairo dark:text-white">
       <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
             <TooltipComponent content="Settings" position="Top">
               <button
@@ -212,7 +127,7 @@ const App = () => {
               <Navbar />
             </div>
    <div>
-      {isAuthenticated ? (
+      {/* {isAuthenticated ? (
         <div>
           <p>Welcome, {accounts[0]?.name}</p>
          
@@ -221,16 +136,56 @@ const App = () => {
         </div>
       ) : (
         <button onClick={handleLogin}>Login</button>
-      )}
+      )} */}
     </div>
             <div className="">
               <Routes>
-              <Route path="*" element={<Dashboard />} />
-                <Route path="/" element={<Dashboard />} />
+              <Route path="*" element={<AuthComponent />} />
+                <Route path="/" element={<AuthComponent />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/total" element={<Total />} />
-                <Route path="/StudentPull" element={<StudentsPull />} />
-                <Route path="/CoursesPull" element={<CoursesPull />} />
+                {/* <Route path="/total" element={<Total />} /> */}
+                {/* <Route path="/StudentPull" element={<StudentsPull />} /> */}
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route
+                  path="/StudentPull"
+                  element={
+                    <ProtectedRoute
+                      element={<StudentsPull />}
+                      isAdmin={IsAdmin}
+                    />
+                  }
+                />
+                <Route
+                  path="/total"
+                  element={
+                    <ProtectedRoute
+                      element={<Total />}
+                      isAdmin={IsAdmin}
+                    />
+                  }
+                />
+                <Route
+                  path="/CoursesPull"
+                  element={
+                    <ProtectedRoute
+                      element={<CoursesPull />}
+                      isAdmin={IsAdmin}
+                    />
+                  }
+                />
+                 <Route
+                  path="/Customization"
+                  element={
+                    <ProtectedRoute
+                      element={<Customization />}
+                      isAdmin={IsAdmin}
+                    />
+                  }
+                />
+                {/* <Route path="/Customization" element={<Customization />} /> */}
+                {/* <Route path="/CoursesPull" element={<CoursesPull />} /> */}
+                
+                <Route path="/ssoDemo" element={<AuthComponent />} />
                 <Route path="/Transcript" element={<Transcript />} />
                 <Route path="/study-timetable" element={<StudyTimetable />} />
                 <Route path="/exam-timetable" element={<ExamTimeTable />} />
@@ -242,7 +197,6 @@ const App = () => {
                 <Route path="/courses-questionnaire" element={<CoursesQuestionnaire />} />
                 <Route path="/services-questionnaire" element={<ServicesQuestionnaire />} />
                 <Route path="/Progress" element={<Progress />} />
-                <Route path="/Customization" element={<Customization />} />
                 <Route path="/Subject-Result" element={<SubjectResult />} />
                 <Route path="/ssodemo" component={<SsoDemo/>} />
                 <Route path="/line" element={<Line />} />
@@ -278,6 +232,7 @@ const App = () => {
         }}
       />
     </div>
+    // </MsalProvider>
   );
 };
 

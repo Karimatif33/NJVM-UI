@@ -1,33 +1,29 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-  "manifestVersion": "1.16",
+  "manifestVersion": "1.17",
   "version": "1.0.0",
-  "id": "${{TEAMS_APP_ID}}",
-  "packageName": "com.contoso.teamsauthsso",
+  "id": "40ea033c-b4f6-481b-95aa-4de8923abd2a",
   "developer": {
-    "name": "Microsoft",
-    "websiteUrl": "https://www.microsoft.com",
-    "privacyUrl": "https://www.microsoft.com/privacy",
-    "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
+    "name": "Horus Software Department ",
+    "websiteUrl": "https://www.horus.edu.eg",
+    "privacyUrl": "https://www.horus.edu.eg/privacy",
+    "termsOfUseUrl": "https://www.horus.edu.eg/termsofuse"
   },
-  "name": {
-    "short": "Tab Auth SSO",
-    "full": "Tab Auth SSO"
-  },
+  "name": { "short": "NGT", "full": "Horus University in Egypt" },
   "description": {
-    "short": "Tab Auth SSO app",
-    "full": "This sample shows sso authentication for tab."
+    "short": "Student Information Portal",
+    "full": "Student Portal:\nAcademic Reports\nFinancial Reports\nQuestionnaire\nNotifications "
   },
   "icons": {
     "outline": "outline.png",
     "color": "color.png"
   },
-  "accentColor": "#60A18E",
+  "accentColor": "#b88e1d",
   "staticTabs": [
     {
       "entityId": "auth",
       "name": "Auth",
-      "contentUrl": "${{TAB_ENDPOINT}}/ssoDemo/?inTeams=true",
+      "contentUrl": "https://njmc.horus.edu.eg/",
       "scopes": [
         "personal"
       ]
@@ -35,7 +31,7 @@
   ],
   "configurableTabs": [
     {
-      "configurationUrl": "${{TAB_ENDPOINT}}/configure/?inTeams=true",
+      "configurationUrl": "https://njmc.horus.edu.eg/auth-end",
       "canUpdateConfiguration": true,
       "scopes": [
         "team"
@@ -47,10 +43,10 @@
     "messageTeamMembers"
   ],
   "validDomains": [
-    "${{TAB_DOMAIN}}"
+    "njmc.horus.edu.eg"
   ],
   "webApplicationInfo": {
-    "id": "${{AAD_APP_CLIENT_ID}}",
-    "resource": "api://${{TAB_DOMAIN}}/${{AAD_APP_CLIENT_ID}}"
+    "id": "bb977033-8f3e-4f91-b2a5-0a3a3591a36f",
+    "resource": "api://njmc.horus.edu.eg/bb977033-8f3e-4f91-b2a5-0a3a3591a36f"
   }
 }

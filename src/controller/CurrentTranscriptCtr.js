@@ -1,7 +1,7 @@
 const { connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
-
+require("dotenv").config();
 exports.fetshingCurrentTranscript = AsyncHandler(async (req, res) => {
   const client = await connect();
 
@@ -19,7 +19,7 @@ exports.fetshingCurrentTranscript = AsyncHandler(async (req, res) => {
 
 
   const StuId = req.params.StuId;
-  const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUECurrentTranscript?index=StudentCurrentTranscript&student_id=${StuId}&curr_academic_year=${selectedacadyearvalue}&curr_semester=${selectedsemestervalue}`;
+  const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUECurrentTranscript?index=StudentCurrentTranscript&student_id=${StuId}&curr_academic_year=${selectedacadyearvalue}&curr_semester=${selectedsemestervalue}`;
 
   try {
 

@@ -2,10 +2,10 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/QuestionsDataSchema");
-
+require("dotenv").config();
 exports.fetshingQuestionsData = AsyncHandler(async (req, res) => {
   const apiUrl =
-    "https://oerp.horus.edu.eg/WSNJ/HUEQuestions?index=QuestionsData";
+    `${process.env.HORUS_API_DOMAIN}/WSNJ/HUEQuestions?index=QuestionsData`;
 
   try {
     // Call the function to create schema and table before fetching data

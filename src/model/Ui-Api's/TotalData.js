@@ -87,7 +87,7 @@ async function fetchDataByIdFromDB(code) {
     console.log("client relases");
     return dataWithDefaults;
   } catch (error) {
-    console.error("Error fetching datas:", error.message);
+    console.error("Error fetching data:", error.message);
     return [];
   }
 }

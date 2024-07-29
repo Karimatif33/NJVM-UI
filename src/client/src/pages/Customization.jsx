@@ -13,11 +13,7 @@ export const Customization = () => {
   const { DBUser } = useStateContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (DBUser === null) {
-      navigate("/dashboard");
-    }
-  }, [DBUser, navigate]);
+;
   return (
     <div className=" drop-shadow-xl flex flex-col items-center">
       <p className="text-center m-3 text-5xl dark:text-white">Customization</p>

@@ -1,5 +1,5 @@
 // src/authConfig.js
-
+import { PublicClientApplication } from "@azure/msal-browser";
 export const msalConfig = {
     auth: {
       clientId: 'bb977033-8f3e-4f91-b2a5-0a3a3591a36f',
@@ -11,12 +11,11 @@ export const msalConfig = {
       storeAuthStateInCookie: false, // Set to true if you want to store the auth state in cookies
     }
   };
-  
+  const msalInstance = new PublicClientApplication(msalConfig);
+
   export const loginRequest = {
     scopes: ['openid', 'profile', 'email']
   };
   
-  export const graphConfig = {
-    graphMeEndpoint: 'https://graph.microsoft.com/v1.0/me'
-  };
-  
+
+  export default msalInstance;

@@ -35,21 +35,21 @@ export const ContextProvider = ({ children }) => {
   });
 
 
-  useEffect(() => {
-    // Retrieve userId from local storage
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId && !DBUser) {
-      // Check if DBUser state is not already set
-      setDBUser(storedUserId);
-    }
+  // useEffect(() => {
+  //   // Retrieve userId from local storage
+  //   const storedUserId = localStorage.getItem("userId");
+  //   if (storedUserId && !DBUser) {
+  //     // Check if DBUser state is not already set
+  //     setDBUser(storedUserId);
+  //   }
 
-    // Retrieve StudentCode from local storage
-    const storedId = localStorage.getItem("StudentCode");
-    if (storedId && !user) {
-      // Check if user state is not already set
-      setUser(storedId);
-    }
-  }, [DBUser, setDBUser, user, setUser]);
+  //   // Retrieve StudentCode from local storage
+  //   const storedId = localStorage.getItem("StudentCode");
+  //   if (storedId && !user) {
+  //     // Check if user state is not already set
+  //     setUser(storedId);
+  //   }
+  // }, [DBUser, setDBUser, user, setUser]);
 
 
   useEffect(() => {

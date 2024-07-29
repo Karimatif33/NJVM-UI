@@ -17,11 +17,7 @@ export const CoursesPull = () => {
   const { DBUser } = useStateContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (DBUser === null) {
-      navigate("/dashboard");
-    }
-  }, [DBUser, navigate]);
+
   const handleToggle = () => {
     const accordion = document.getElementById("accordion");
     if (accordion.open) {

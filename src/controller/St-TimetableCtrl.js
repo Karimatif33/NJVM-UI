@@ -3,7 +3,7 @@ const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/StudyTimetableSchema");
 const logger = require("../model/logger");
-
+require("dotenv").config();
 exports.fetshingStudyTimetable = AsyncHandler(async(req, res, next) => {
     let StuId = req.params.StuId;
 
@@ -20,7 +20,7 @@ exports.fetshingStudyTimetable = AsyncHandler(async(req, res, next) => {
       }
     }
 
-    const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUEStudyTimetable?index=StudyTimetable&student_id=${StuId}`;
+    const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUEStudyTimetable?index=StudyTimetable&student_id=${StuId}`;
 
     // const apiUrl = `https://odoo.horus.edu.eg/WSNJ/HUEStudyTimetable?index=StudyTimetable&student_id=${StuId}`;
     // 4231404 --- 16828

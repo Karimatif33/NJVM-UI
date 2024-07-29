@@ -7,33 +7,36 @@ import { IoIosTimer } from "react-icons/io";
 import { FaChartLine } from "react-icons/fa6";
 import LineChart from "../components/Charts/LineChart";
 import Pie from "../components/Charts/Pie";
+import { useNavigate } from "react-router";
 function Dashboard() {
   const [students, setStudents] = useState([]);
   const { user, setDBUser, setUser, DBUser, StuName, setStuName, setCurrCourseId, setIsAdmin } =
     useStateContext();
   const [showComponent, setShowComponent] = useState(false);
-  useEffect(() => {
-    // Retrieve userId from local storage
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId && !DBUser) {
-      // Check if DBUser state is not already set
-      setDBUser(storedUserId);
-    }
+  const navigate = useNavigate();
 
-    // Retrieve StudentCode from local storage
-    const storedId = localStorage.getItem("StudentCode");
-    if (storedId && !user) {
-      // Check if user state is not already set
-      setUser(storedId);
-    }
-  }, [DBUser, setDBUser, user, setUser]); // Include DBUser and user in the dependency array
+  // useEffect(() => {
+  //   // Retrieve userId from local storage
+  //   const storedUserId = localStorage.getItem("userId");
+  //   if (storedUserId && !DBUser) {
+  //     // Check if DBUser state is not already set
+  //     setDBUser(storedUserId);
+  //   }
 
-  useEffect(() => {
-    // This effect will run only after user and StudentCode have been set
-    console.log(user); // This will log the user after it has been set from local storage
+  //   // Retrieve StudentCode from local storage
+  //   const storedId = localStorage.getItem("StudentCode");
+  //   if (storedId && !user) {
+  //     // Check if user state is not already set
+  //     setUser(storedId);
+  //   }
+  // }, [DBUser, setDBUser, user, setUser]); // Include DBUser and user in the dependency array
 
-    // Add your other logic here that depends on user and StudentCode
-  }, [user]); // Only user is needed as a dependency here
+  // useEffect(() => {
+  //   // This effect will run only after user and StudentCode have been set
+  //   console.log(user); // This will log the user after it has been set from local storage
+
+  //   // Add your other logic here that depends on user and StudentCode
+  // }, [user]); // Only user is needed as a dependency here
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +102,13 @@ function Dashboard() {
 
     return () => clearTimeout(timer);
   }, []);
+  
+  useEffect(() => {
+    if (user === null) {
+      navigate("/ssodemo");
+    }
+  }, [user, navigate]);
+
   return (
     <>
       {/* {students === null || students.length === 0 ? (

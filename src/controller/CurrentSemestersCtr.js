@@ -1,7 +1,7 @@
 const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
-
+require("dotenv").config();
 exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
   const client = await connect();
 
@@ -18,9 +18,8 @@ exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
   console.log("ID value:", selectedsemestervalue);
 
   const StuId = req.params.StuId;
-  const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUECurrentSemesters?index=StudentCurrentSemesters&student_id=${StuId}&curr_academic_year=${selectedacadyearvalue}&curr_semester=${selectedsemestervalue}`;
+  const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUECurrentSemesters?index=StudentCurrentSemesters&student_id=${StuId}&curr_academic_year=${selectedacadyearvalue}&curr_semester=${selectedsemestervalue}`;
 
-  // https://oerp.horus.edu.eg/WSNJ/HUECurrentSemesters?index=StudentCurrentSemesters&course_id=32&curr_academic_year=69536&curr_semester=2
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {

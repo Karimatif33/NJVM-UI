@@ -3,12 +3,18 @@ const { fetchStudentByCode } = require("../../model/Ui-Api's/Transcript"); // Ad
 
 async function uiTranscriptController(req, res) {
   try {
-    const id = req.params.id;
-    const data = await fetchStudentByCode(id);
+    let id = req.params.id;
+    
+    if (id === null || isNaN(id)) {
+      id = 0;
+    } else {
+      id = parseInt(id);
+      const data = await fetchStudentByCode(id);
+      res.json(data);
+    }
     // console.log(id)
-    res.json(data);
   } catch (error) {
-    console.error("Error fetching data:", error.message);
+    console.error("Error fetching dataa:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }

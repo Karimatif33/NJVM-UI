@@ -2,9 +2,9 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/FacultyDataSchema");
-
+require("dotenv").config();
 exports.fetshingFacultyData = AsyncHandler(async (req, res) => {
-  const apiUrl = "https://oerp.horus.edu.eg/WSNJ/HUEFaculty?index=FacultyData";
+  const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUEFaculty?index=FacultyData`;
 
 
   try {

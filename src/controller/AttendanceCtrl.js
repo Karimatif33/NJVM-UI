@@ -2,10 +2,10 @@ const { connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/AttendanceSchema");
-
+require("dotenv").config();
 exports.fetshingAttendance = AsyncHandler(async (req, res) => {
   const StuId = req.params.StuId;
-  const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUEAttendance?index=Attendance&studentID=${StuId}`;
+  const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUEAttendance?index=Attendance&studentID=${StuId}`;
   const client = await connect();
 
   try {
@@ -37,7 +37,7 @@ exports.fetshingAttendance = AsyncHandler(async (req, res) => {
       // Respond with a JSON message
       return res.json({ message: "There is no Absence" });
     } else {
-      
+
       const SchemaAndTable = "Attendance.attendance_data";
 
       const deleteAllByStuIdQuery = `

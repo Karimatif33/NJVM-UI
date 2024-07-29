@@ -2,10 +2,16 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/StudentCheckBlockSchema");
-
+require("dotenv").config();
 exports.fetshingCheckBlock = AsyncHandler(async (req, res) => {
   const StuId = req.params.StuId;
-  const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUECheckBlock?index=StudentCheckBlock&student_id=${StuId}`;
+  if (StuId === null || isNaN(StuId)) {
+    StuId = 0;
+  } else {
+    StuId = parseInt(StuId);
+  
+  }
+  const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUECheckBlock?index=StudentCheckBlock&student_id=${StuId}`;
 
   try {
     // Call the function to create schema and table before fetching data
@@ -30,7 +36,7 @@ exports.fetshingCheckBlock = AsyncHandler(async (req, res) => {
     WHERE Stu_ID = $1;
   `;
     await client.query(deleteAllByStuIdQuery, [StuId]);
-    
+
     try {
       for (const item of Block) {
         const Stu_IDValue = StuId;
