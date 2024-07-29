@@ -61,12 +61,14 @@ const Attendance = () => {
     ));
     return <div className="grid grid-cols-3 gap-0">{grid}</div>;
   };
+  if (loading) {
+    return <Spinner currentcolor={currentcolor} />;
+  }
+
 
   return (
     <div className="mt-8 mx-auto mb-8 mr-5 ml-10 flex flex-wrap gap-9 AbccSheet">
-      {loading ? (
-        <Spinner currentcolor={currentcolor} />
-      ) : data && data.length > 0 ? (
+      {data && data.length > 0 ? (
         data.map((item) => (
           <div
             key={item?.id}

@@ -4,7 +4,20 @@ const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/StuFeesDataSchema");
 require("dotenv").config();
 exports.fetshingStuFeesData = AsyncHandler(async (req, res) => {
-  const StuId = req.params.StuId;
+  let StuId = req.params.StuId;
+
+  // Check if StuId is null or undefined, and set it to 0 if true
+  if (StuId === null || StuId === undefined) {
+    StuId = 0;
+  } else {
+    // Convert StuId to a number if it's a string or other type
+    StuId = parseInt(StuId, 10);
+
+    // Check if conversion failed and set to 0 if so
+    if (isNaN(StuId)) {
+      StuId = 0;
+    }
+  }
   const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUEStuFees?index=StuFeesData&student_id=${StuId}`;
   const client = await connect();
 

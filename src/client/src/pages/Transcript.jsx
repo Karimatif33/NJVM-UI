@@ -175,12 +175,13 @@ const Transcript = () => {
     const subjectsData = await Promise.all(promises);
     setSubjectsData(subjectsData);
   };
+  if (loading) {
+    return <Spinner currentcolor={currentcolor} />;
+  }
 
   return (
     <div className="mt-8 mx-auto mb-8 mr-5 ml-10 flex flex-wrap gap-9 transCard">
-      {loading ? (
-        <Spinner currentcolor={currentcolor} />
-      ) : data && data.length > 0 ? (
+      {data && data.length > 0 ? (
         Object.entries(groupDataByAcademicYear(data))
           .sort(([academicYearA], [academicYearB]) => {
             const yearA = parseInt(academicYearA.split(" ")[2]);

@@ -46,13 +46,14 @@ const Unbaidinvoices = () => {
     }
   }, [DBUser, navigate]);
 
-  
+  if (loading) {
+    return <Spinner currentcolor={currentcolor} />;
+  }
+
   return (
     // mt-8 mx-auto max-w-5xl grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 incoives sm:mt-[80px]
     <div className="flex flex-wrap justify-start gap-6 incoives mx-7 incoives max-w-[90%] " key={data.id}>
-      {loading ? (
-        <Spinner currentcolor={currentcolor} />
-      ) : data && data.length > 0 ? (
+      {data && data.length > 0 ? (
         data.map((item) => (
           <div className="my-8 ">
             <div

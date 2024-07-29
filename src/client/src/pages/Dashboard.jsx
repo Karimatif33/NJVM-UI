@@ -15,28 +15,7 @@ function Dashboard() {
   const [showComponent, setShowComponent] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   // Retrieve userId from local storage
-  //   const storedUserId = localStorage.getItem("userId");
-  //   if (storedUserId && !DBUser) {
-  //     // Check if DBUser state is not already set
-  //     setDBUser(storedUserId);
-  //   }
 
-  //   // Retrieve StudentCode from local storage
-  //   const storedId = localStorage.getItem("StudentCode");
-  //   if (storedId && !user) {
-  //     // Check if user state is not already set
-  //     setUser(storedId);
-  //   }
-  // }, [DBUser, setDBUser, user, setUser]); // Include DBUser and user in the dependency array
-
-  // useEffect(() => {
-  //   // This effect will run only after user and StudentCode have been set
-  //   console.log(user); // This will log the user after it has been set from local storage
-
-  //   // Add your other logic here that depends on user and StudentCode
-  // }, [user]); // Only user is needed as a dependency here
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,7 +98,7 @@ function Dashboard() {
       <div className="mt-12">
         <div className="flex flex-wrap lg:flex-nowrap justify-center ">
           {/* <div className= "bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44 rounded-xl w-full lg:w-[36rem] p-6 pt-9 m-3 bg-hero-pattern bg-no-repat bg-cover bg-center drop-shadow-xl hover:drop-shadow-2xl"> */}
-          <div className="DashboardCard bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-[11.3rem] rounded-xl w-full lg:w-[36rem] p-6 pt-9 m-3  drop-shadow-xl hover:drop-shadow-2xl">
+          <div className="DashboardCard bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-[11.3rem] rounded-xl w-full lg:w-[36rem] p-6 pt-9 m-3  drop-shadow-xl hover:drop-shadow-2xl   bg-eye-horus bg-no-repat  bg-center">
             <div className="flex justify-between items-center ">
               <div>
                 {students.map((item) => (

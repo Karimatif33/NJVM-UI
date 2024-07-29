@@ -9,9 +9,9 @@ import Spinner from './components/Spinner';
 const AuthComponent = () => {
   const { instance } = useMsal();
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
+
   const navigate = useNavigate();
-  const { setUser, setStuName, setIsAdmin } = useStateContext();
+  const { setUser, setStuName, setIsAdmin,  setLoading, loading } = useStateContext();
 
   useEffect(() => {
     const initializeAuth = async () => {

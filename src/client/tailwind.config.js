@@ -43,7 +43,7 @@ module.exports = {
         'hero-pattern':
           "url('../src/data/welcome-bg.svg')",
           'eye-horus':
-          "url('../src/data/Eye-of-Horus.svg')",
+          "url('../src/utiltis/IMG/Eye-of-Horus.svg')",
       },
     },
   },

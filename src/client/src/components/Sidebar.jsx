@@ -2,8 +2,9 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { RiCloseLine } from "react-icons/ri";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import MCLogoMainSidebar from '../utiltis/IMG/MC.png'; // Adjust the path as necessary
-import HUELogoMainSidebar from '../utiltis/IMG/HUE.png'; // Adjust the path as necessary
+import MCLogoMainSidebar from "../utiltis/IMG/MC.png"; // Adjust the path as necessary
+import HUELogoMainSidebar from "../utiltis/IMG/HUE.png"; // Adjust the path as necessary
+import HUELogoDarkSidebar from "../utiltis/IMG/Logo-dark.png"; // Adjust the path as necessary
 
 import { links, links_Stu } from "./utiltisContact/NavLinksData";
 // import { useStateContext } from '../contexts/ContextProvider';
@@ -13,7 +14,7 @@ import InputForm from "../components/Input";
 export const Sidebar = () => {
   const { activeMenu, setActiveMenu, screenSize, currentcolor } =
     useStateContext();
-  const { IsAdmin } = useStateContext();
+  const { IsAdmin, DBUser, currentMode } = useStateContext();
 
   const handleCloseSideBar = () => {
     if (activeMenu !== undefined && screenSize <= 900) {
@@ -32,13 +33,19 @@ export const Sidebar = () => {
           <div className="flex justify-between items-center ease-in">
             <Link
               to="/"
-              onClick={() => {}}
+              onClick={() => { }}
               className="items-center gap-3 ml-[2px] mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
             >
-        <span className="w-[170px] ml-[45px]">
-              <img src={HUELogoMainSidebar} alt="HUE" />
+              <span className="w-[170px] ml-[45px]">
+                <img
+                  src={
+                    currentMode === "Dark"
+                      ? HUELogoDarkSidebar
+                      : HUELogoMainSidebar
+                  }
+                  alt="HUE"
+                />
               </span>
-              {/* <span>HUE</span> */}
             </Link>
             {/* <TooltipComponent content="Close" position="BottomCenter">
               <button
@@ -55,31 +62,70 @@ export const Sidebar = () => {
           </div>
           {IsAdmin && <InputForm />}
           <div className="mt-10">
-            {IsAdmin &&
-              links.map((item) => (
-                <div key={item.title}>
-                  <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
-                    {item.title}
-                    {/* {console.log(item)} */}
-                  </p>
-                  {item.links.map((link) => (
-                    <NavLink
-                      to={`./${link.path}`}
-                      key={link.name}
-                      onClick={handleCloseSideBar}
-                      style={({ isActive }) => ({
-                        backgroundColor: isActive ? currentcolor : "",
-                      })}
-                      className={({ isActive }) =>
-                        isActive ? activeLink : normalLink
-                      }
-                    >
-                      {link.icon}
-                      <span className="capitalize">{link.name}</span>
-                    </NavLink>
-                  ))}
-                </div>
-              ))}
+            {links.map((item) => (
+              <div key={item.title}>
+                {/* Always show the CUSTOMIZATION section */}
+                {item.title === "CUSTOMIZATION" && (
+                  <>
+                    <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
+                      {item.title}
+                    </p>
+                    {item.links.map((link) => (
+                      <NavLink
+                        to={`./${link.path}`}
+                        key={link.name}
+                        onClick={handleCloseSideBar}
+                        style={({ isActive }) => ({
+                          backgroundColor: isActive ? currentcolor : "",
+                          pointerEvents: DBUser ? "auto" : "auto",
+                          opacity: DBUser ? 1 : 1,
+                        })}
+                        className={({ isActive }) =>
+                          isActive
+                            ? `${activeLink} ${DBUser ? "" : ""}`
+                            : `${normalLink} ${DBUser ? "" : ""}`
+                        }
+                        
+                      >
+                        {link.icon}
+                        <span className="capitalize">{link.name}</span>
+                      </NavLink>
+                    ))}
+                  </>
+                )}
+                {/* Conditionally show other sections based on IsAdmin and DBUser */}
+                {item.title !== "CUSTOMIZATION" && IsAdmin && DBUser && (
+                  <>
+                    <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
+                      {item.title}
+                    </p>
+                    {item.links.map((link) => (
+                      <NavLink
+                        to={`./${link.path}`}
+                        key={link.name}
+                        onClick={handleCloseSideBar}
+                        style={({ isActive }) => ({
+                          backgroundColor: isActive ? currentcolor : "",
+                          pointerEvents: DBUser ? "auto" : "none",
+                          opacity: DBUser ? 1 : 0.5,
+                        })}
+                        className={({ isActive }) =>
+                          isActive
+                            ? `${activeLink} ${DBUser ? "" : "disabled-link"}`
+                            : `${normalLink} ${DBUser ? "" : "disabled-link"}`
+                        }
+                        aria-disabled={!DBUser}
+                      >
+                        {link.icon}
+                        <span className="capitalize">{link.name}</span>
+                      </NavLink>
+                    ))}
+                  </>
+                )}
+              </div>
+            ))}
+
+
             {!IsAdmin &&
               links_Stu.map((item) => (
                 <div key={item.title}>

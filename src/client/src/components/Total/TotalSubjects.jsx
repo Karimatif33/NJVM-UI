@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import ButtonType from "../ButtonType";
-
 const TotalSubjects = () => {
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

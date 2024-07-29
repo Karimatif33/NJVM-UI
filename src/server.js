@@ -38,26 +38,6 @@ const morganStream = {
 };
 
 
-const limiter = rateLimit({
-  windowMs: 15 * 30 * 1000, // 15 minutes
-  max: 1000, // Limit each IP to 500 requests per `windowMs` (here, per 15 minutes).
-  handler: (req, res, next, options) => {
-    const ip = req.ip;
-    const timeLeftMs = options.windowMs - (Date.now() - req.rateLimit.resetTime);
-    const minutesLeft = Math.floor(timeLeftMs / (60 * 1000));
-    const secondsLeft = Math.ceil((timeLeftMs % (60 * 1000)) / 1000);
-    const message = `Rate limit exceeded . Try again after ${minutesLeft} minutes and ${secondsLeft} seconds. Or contact your Admin !!`;
-    console.log(message); // Log the message
-
-    // Respond with rate limit exceeded message including time left
-    res.status(options.statusCode).json({
-      message: message,
-    });
-  },
-  message: 'Too many requests from this IP, please try again after 15 minutes.',
-});
-// app.use(limiter);
-
 
 
 

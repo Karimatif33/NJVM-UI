@@ -2,6 +2,7 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 require("dotenv").config();
+
 exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
   const client = await connect();
 
@@ -12,8 +13,8 @@ exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
   `;
 
   const result = await client.query(query);
-  const selectedacadyearvalue = result.rows[0].selectedacadyearvalue; // Access the value of the id column from the first row
-  const selectedsemestervalue = result.rows[0].selectedsemestervalue; // Access the value of the id column from the first row
+  const selectedacadyearvalue = result.rows[0].selectedacadyearvalue;
+  const selectedsemestervalue = result.rows[0].selectedsemestervalue;
 
   console.log("ID value:", selectedsemestervalue);
 
@@ -23,21 +24,20 @@ exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch data from API. Status: ${response.status}`
-      );
+      // Log the error and send an error response
+      const errorText = await response.text();
+      console.error(`Failed to fetch data from API. Status: ${response.status}. Error: ${errorText}`);
+      return res.status(response.status).json({ error: `Failed to fetch data from API. Status: ${response.status}. Error: ${errorText}` });
     }
     const apiData = await response.json();
-
     const students = apiData.students;
 
-    // Connect to the database
     const SchemaAndTable = "StudentSemesters.students";
 
     const deleteAllByStuIdQuery = `
-    DELETE FROM ${SchemaAndTable}
-    WHERE StudentID = $1;
-  `;
+      DELETE FROM ${SchemaAndTable}
+      WHERE StudentID = $1;
+    `;
     await client.query(deleteAllByStuIdQuery, [StuId]);
 
     try {
@@ -49,31 +49,25 @@ exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
         const SemesterValue = item.Semester;
         const SemesterGPAValue = item.SemesterGPA !== null && item.SemesterGPA !== false ? item.SemesterGPA : 0;
         const SemesterHRValue = item.SemesterHR !== null && item.SemesterHR !== false ? item.SemesterHR : 0;
-
-
         const CurrentGPAValue = typeof item.CurrentGPA === 'number' ? Number(item.CurrentGPA.toFixed(2)) : null;
-
-
         const final_gradeValue = item.final_grade;
         const blockedValue = item.blocked;
 
-        // console.log(nameValue, IDValue);
-
         const insertQuery = `
-        INSERT INTO ${SchemaAndTable} (ID, StudentID, CourseID, AcadYear, Semester, SemesterGPA, SemesterHR, CurrentGPA, FinalGrade, Blocked) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        ON CONFLICT (ID) DO UPDATE
-        SET 
-        StudentID = $2,
-        CourseID = $3,
-        AcadYear = $4,
-        Semester = $5,
-        SemesterGPA = $7,
-        SemesterHR = $6,
-        CurrentGPA = $8,
-        FinalGrade = $9,
-        Blocked = $10;
-      `;
+          INSERT INTO ${SchemaAndTable} (ID, StudentID, CourseID, AcadYear, Semester, SemesterGPA, SemesterHR, CurrentGPA, FinalGrade, Blocked) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          ON CONFLICT (ID) DO UPDATE
+          SET 
+            StudentID = $2,
+            CourseID = $3,
+            AcadYear = $4,
+            Semester = $5,
+            SemesterGPA = $7,
+            SemesterHR = $6,
+            CurrentGPA = $8,
+            FinalGrade = $9,
+            Blocked = $10;
+        `;
 
         await client.query(insertQuery, [
           IDValue,
@@ -90,44 +84,26 @@ exports.fetshingCurrentSemesters = AsyncHandler(async (req, res) => {
         console.log("Data inserted into the database successfully");
       }
 
-      // Select data based on the provided StuId
       const selectQuery = `
-    SELECT StudentSemesters.students.*
-    FROM StudentSemesters.students
-    WHERE StudentSemesters.students.StudentID = $1;
-  `;
-
+        SELECT StudentSemesters.students.*
+        FROM StudentSemesters.students
+        WHERE StudentSemesters.students.StudentID = $1;
+      `;
       const result = await client.query(selectQuery, [StuId]);
 
       res.json(result.rows);
       client.release();
       return { status: "success" };
     } catch (error) {
-      console.error(`Error fetching data from ${apiUrl}:`, error.message);
-      return { status: "fail", error: `Error fetching data from ${apiUrl}` };
+      console.error(`Error inserting/updating data:`, error.message);
+      res.status(500).json({ error: `Error inserting/updating data: ${error.message}` });
     }
+  } catch (error) {
+    console.error(`Error fetching data from ${apiUrl}:`, error.message);
+    res.status(500).json({ error: `Error fetching data from ${apiUrl}: ${error.message}` });
   } finally {
-    // console.log("client release");;
+    if (client) {
+      client.release();
+    }
   }
-
-  //   } catch (error) {
-  //     console.error(error.message);
-  //   }
-  // } catch (error) {
-  //   console.error("Error fetching data:", error.message);
-
-  //   const selectQuery = `
-  //   SELECT StudentSemesters.students.*
-  //   FROM StudentSemesters.students
-  //   WHERE StudentSemesters.students.StudentID = $1;
-  // `;
-
-  //   const result = await client.query(selectQuery, [StuId]);
-  //   res.json(result.rows);
-  //   console.log("getting data from DB");
-  // } finally {
-  //   if (client) {
-  //     client.release();
-  //   }
-  // }
 });

@@ -4,12 +4,11 @@ const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/StudentCheckBlockSchema");
 require("dotenv").config();
 exports.fetshingCheckBlock = AsyncHandler(async (req, res) => {
-  const StuId = req.params.StuId;
+  let StuId = req.params.StuId;
   if (StuId === null || isNaN(StuId)) {
     StuId = 0;
   } else {
     StuId = parseInt(StuId);
-  
   }
   const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUECheckBlock?index=StudentCheckBlock&student_id=${StuId}`;
 

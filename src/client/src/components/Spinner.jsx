@@ -1,36 +1,22 @@
-import styled, { keyframes } from "styled-components";
+// Spinner.js
+import React from 'react';
+import { BeatLoader } from 'react-spinners';
+import OverlayImage from '../utiltis/IMG/thumbnail_banner3-55.png'; // Adjust the path as needed
 
-const rotate = keyframes`
-  to {
-    transform: rotate(1turn)
-  }
-`;
-
-const Spinner = ({ currentcolor }) => {
+const Spinner = () => {
   return (
-    <StyledSpinner currentcolor={currentcolor}>
-      {/* Your spinner content here */}
-    </StyledSpinner>
+    <div className="flex items-center justify-center min-h-screen">
+<div className="flex flex-col items-center gap-4"> {/* Adjust gap as needed */}
+  <img
+    src={OverlayImage}
+    alt="Overlay"
+    className="w-32 h-32"
+  />
+  <BeatLoader color="#b88b1a" size={20} />
+</div>
+    </div>
   );
 };
 
-const StyledSpinner = styled.div`
-  margin: 4.8rem auto;
-  width: 6.4rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(
-        farthest-side,
-        ${({ currentcolor }) => currentcolor || "#b68a1c"} 94%,
-        #0000
-      )
-      top / 10px 10px no-repeat,
-    conic-gradient(
-      #0000 30%,
-      ${({ currentcolor }) => currentcolor || "#b68a1c"}
-    );
-  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 10px), #000 0);
-  animation: ${rotate} 1.5s infinite linear;
-`;
-
 export default Spinner;
+  

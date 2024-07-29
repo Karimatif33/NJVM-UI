@@ -16,7 +16,7 @@ import { BiSolidCustomize } from "react-icons/bi";
 import { PiExamFill } from "react-icons/pi";
 export const links = [
   {
-    title: "CSustomization",
+    title: "CUSTOMIZATION",
     links: [
       {
         name: "Total",

@@ -18,7 +18,12 @@ exports.fetshingCurrentSemestersCourse = AsyncHandler(async (req, res) => {
   console.log("ID value:", selectedsemestervalue);
 
 
-  const courseId = req.params.courseId;
+  let courseId = req.params.courseId;
+  if (courseId === null || isNaN(courseId)) {
+    courseId = 0;
+  } else {
+    courseId = parseInt(courseId);
+  }
   const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUECurrentSemesters?index=StudentCurrentSemesters&course_id=${courseId}&curr_academic_year=${selectedacadyearvalue}&curr_semester=${selectedsemestervalue}`;
   try {
     const response = await fetch(apiUrl);

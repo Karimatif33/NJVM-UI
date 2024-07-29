@@ -23,7 +23,8 @@ export const ContextProvider = ({ children }) => {
   const [CurrCourseId, setCurrCourseId] = useState("");
   const [devAutFill, setDevAutFill] = useState("hidden");
   const [isDevMode, setIsDevMode] = useState(false);
-  
+  const [loading, setLoading] = useState(true); // Loading state
+
   const [currentMode, setCurrentMode] = useState(() => {
     // Retrieve the theme mode from localStorage, if available
     return localStorage.getItem("themeMode") || "light";
@@ -111,7 +112,9 @@ export const ContextProvider = ({ children }) => {
         setDevAutFill,
         devAutFill,
         isDevMode,
-        setIsDevMode
+        setIsDevMode,
+        setLoading,
+        loading
       }}
     >
       {children}
