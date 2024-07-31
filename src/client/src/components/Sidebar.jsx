@@ -62,77 +62,80 @@ export const Sidebar = () => {
           </div>
           {IsAdmin && <InputForm />}
           <div className="mt-10">
-            {links.map((item) => (
-              <div key={item.title}>
-                {/* Always show the CUSTOMIZATION section */}
-                {item.title === "CUSTOMIZATION" && (
-                  <>
-                    <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
-                      {item.title}
-                    </p>
-                    {item.links.map((link) => (
-                      <NavLink
-                        to={`./${link.path}`}
-                        key={link.name}
-                        onClick={handleCloseSideBar}
-                        style={({ isActive }) => ({
-                          backgroundColor: isActive ? currentcolor : "",
-                          pointerEvents: DBUser ? "auto" : "auto",
-                          opacity: DBUser ? 1 : 1,
-                        })}
-                        className={({ isActive }) =>
-                          isActive
-                            ? `${activeLink} ${DBUser ? "" : ""}`
-                            : `${normalLink} ${DBUser ? "" : ""}`
-                        }
-                        
-                      >
-                        {link.icon}
-                        <span className="capitalize">{link.name}</span>
-                      </NavLink>
-                    ))}
-                  </>
-                )}
-                {/* Conditionally show other sections based on IsAdmin and DBUser */}
-                {item.title !== "CUSTOMIZATION" && IsAdmin && DBUser && (
-                  <>
-                    <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
-                      {item.title}
-                    </p>
-                    {item.links.map((link) => (
-                      <NavLink
-                        to={`./${link.path}`}
-                        key={link.name}
-                        onClick={handleCloseSideBar}
-                        style={({ isActive }) => ({
-                          backgroundColor: isActive ? currentcolor : "",
-                          pointerEvents: DBUser ? "auto" : "none",
-                          opacity: DBUser ? 1 : 0.5,
-                        })}
-                        className={({ isActive }) =>
-                          isActive
-                            ? `${activeLink} ${DBUser ? "" : "disabled-link"}`
-                            : `${normalLink} ${DBUser ? "" : "disabled-link"}`
-                        }
-                        aria-disabled={!DBUser}
-                      >
-                        {link.icon}
-                        <span className="capitalize">{link.name}</span>
-                      </NavLink>
-                    ))}
-                  </>
-                )}
-              </div>
+          {IsAdmin && (
+  <>
+    {links.map((item) => (
+      <div key={item.title}>
+        {/* Always show the CUSTOMIZATION section */}
+        {item.title === "CUSTOMIZATION" && (
+          <>
+            <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
+              {item.title}
+            </p>
+            {item.links.map((link) => (
+              <NavLink
+                to={`./${link.path}`}
+                key={link.name}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentcolor : "",
+                  pointerEvents: "auto",
+                  opacity: 1,
+                })}
+                className={({ isActive }) =>
+                  isActive
+                    ? `${activeLink}`
+                    : `${normalLink}`
+                }
+              >
+                {link.icon}
+                <span className="capitalize">{link.name}</span>
+              </NavLink>
             ))}
+          </>
+        )}
+        {/* Conditionally show other sections based on IsAdmin and DBUser */}
+        {item.title !== "CUSTOMIZATION" && DBUser && (
+          <>
+            <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
+              {item.title}
+            </p>
+            {item.links.map((link) => (
+              <NavLink
+                to={`./${link.path}`}
+                key={link.name}
+                onClick={handleCloseSideBar}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? currentcolor : "",
+                  pointerEvents: "auto",
+                  opacity: DBUser ? 1 : 0.5,
+                })}
+                className={({ isActive }) =>
+                  isActive
+                    ? `${activeLink} ${DBUser ? "" : "disabled-link"}`
+                    : `${normalLink} ${DBUser ? "" : "disabled-link"}`
+                }
+                aria-disabled={!DBUser}
+              >
+                {link.icon}
+                <span className="capitalize">{link.name}</span>
+              </NavLink>
+            ))}
+          </>
+        )}
+      </div>
+    ))}
+  </>
+)}
 
+          
 
             {!IsAdmin &&
               links_Stu.map((item) => (
                 <div key={item.title}>
-                  <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
+                  {/* <p className="text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase">
                     {item.title}
-                    {/* {console.log(item)} */}
-                  </p>
+                  </p> */}
                   {item.links.map((link) => (
                     <NavLink
                       to={`./${link.path}`}

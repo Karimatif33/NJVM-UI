@@ -1,7 +1,7 @@
 // Spinner.js
 import React from 'react';
 import { BeatLoader } from 'react-spinners';
-import OverlayImage from '../utiltis/IMG/thumbnail_banner3-55.png'; // Adjust the path as needed
+import OverlayImage from '../utiltis/IMG/Loadar.png'; // Adjust the path as needed
 
 const Spinner = () => {
   return (

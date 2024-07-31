@@ -2,27 +2,29 @@ const { pool, connect } = require("../db/dbConnect");
 const AsyncHandler = require("express-async-handler");
 const fetch = require("node-fetch").default;
 const { createSchemaAndTable } = require("../model/StudentDataSchema");
+const axios = require('axios');
 require("dotenv").config();
 exports.fetshingStudentData = AsyncHandler(async (req, res) => {
-  const apiUrl = `${process.env.HORUS_API_DOMAIN}/WSNJ/HUEdata?index=StudentData`;
+  const apiUrl = `https://oerp.horus.edu.eg/WSNJ/HUEdata?index=StudentData`;
 
   try {
     // Call the function to create schema and table before fetching data
     await createSchemaAndTable();
-    const response = await fetch(apiUrl);
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch data from API. Status: ${response.status}`
-      );
-    }
-    const apiData = await response.json();
-
+    const response = await axios.get(apiUrl, { timeout: 300000 }); // 300 seconds (5 minutes)
+    const apiData = response.data;
     const students = apiData.students;
 
     // Connect to the database
     const client = await connect();
     const SchemaAndTable = "StudentData.students";
+
+    // if (!response.ok) {
+    //   throw new Error(
+    //     `Failed to fetch data from API. Status: ${response.status}`
+    //   );
+    // }
+
 
     try {
       for (const item of students) {

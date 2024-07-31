@@ -1,4 +1,4 @@
-sudo lsof -i :443            find sessions for port
+sudo lsof -i :3333            find sessions for port
 sudo kill -9 114842          kill ports
 
  screen -S run               create to screen all time named (run)

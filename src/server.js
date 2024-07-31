@@ -196,9 +196,9 @@ console.log(token,authHeader)
 });
 
 
-console.log("Before setup call");
-tabs.setup(app);
-console.log("After setup call");
+// console.log("Before setup call");
+// tabs.setup(app);
+// console.log("After setup call");
 
 app.use((req, res, next) => {
   console.log(`Received request: ${req.method} ${req.url}`);

@@ -103,13 +103,13 @@ function Dashboard() {
               <div>
                 {students.map((item) => (
                   <div key={item.id}>
-                    <p className="font-bold text-gray-400 dark:text-grat-500">
+                    <p className="font-bold text-black-400 dark:text-grat-500">
                       Name :{" "}
                       <span className="font-bold text-black dark:text-gray-300">
                         {item.student_name}
                       </span>
                     </p>
-                    <p className="font-bold text-gray-400 dark:text-grat-500">
+                    <p className="font-bold text-black-400 dark:text-grat-500">
                       Level :{" "}
                       <span className="font-bold text-black dark:text-gray-300">
                         {item.levelname}
@@ -117,13 +117,13 @@ function Dashboard() {
                     </p>
                     {/* Add more fields based on your data structure */}
                     {/* Example: */}
-                    <p className="font-bold text-gray-400 dark:text-grat-500">
+                    <p className="font-bold text-black-400 dark:text-grat-500">
                       Course :{" "}
                       <span className="font-bold text-black dark:text-gray-300">
                         {item.Course}
                       </span>
                     </p>
-                    <p className="font-bold text-gray-400 dark:text-grat-500">
+                    <p className="font-bold text-black-400 dark:text-grat-500">
                       Advisor :{" "}
                       <span className="font-bold text-black dark:text-gray-300">
                         {item.staff_name}
@@ -228,12 +228,12 @@ function Dashboard() {
               <Stacked width="550px" height="360px" />
             </div> */}
                   <div className="flex flex-col gap-[6.5rem] flex-wrap justify-center p-4">
-      <div className="mt-10 flex flex-col md:flex-row gap-[8.5rem] flex-wrap justify-center chartssGap">
-
+{DBUser ? (<div className="mt-10 flex flex-col md:flex-row gap-[8.5rem] flex-wrap justify-center chartssGap">
           <LineChart />
 
           <Pie />
-      </div>
+      </div>) : <></>}
+      
     </div>
           </div>
         {/* </div>

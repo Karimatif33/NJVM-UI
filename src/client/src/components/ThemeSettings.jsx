@@ -18,7 +18,8 @@ const ThemeSettings = () => {
     setDevAutFill,
     isDevMode,
     setIsDevMode ,
-    devAutFill
+    devAutFill,
+    IsAdmin,
   } = useStateContext();
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -132,7 +133,7 @@ const ThemeSettings = () => {
             ))}
           </div>
         </div>
-        <div className="p-4 border-t-1 border-color ml-4">
+        {IsAdmin ? (<div className="p-4 border-t-1 border-color ml-4">
           <p className="font-semibold text-xl ">Dev Mode</p>
           <div className="flex justify-around">
           <div className="center">
@@ -144,7 +145,8 @@ const ThemeSettings = () => {
           </button>
             </div>
           </div>
-        </div>
+        </div>) : <></>}
+        
       </div>
     </div>
   );
