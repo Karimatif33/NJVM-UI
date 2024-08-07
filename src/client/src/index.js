@@ -1,16 +1,22 @@
-console.log = function () {};
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import { ContextProvider } from "./context/ContextProvider";
-import { PublicClientApplication } from '@azure/msal-browser';
 import { MsalProvider } from '@azure/msal-react';
-// import { msalConfig } from './authConfig';
 import msalInstance from './authConfig';
-// const pca = new PublicClientApplication(msalConfig);
 
-// In your index.js or App.js (or any entry point of your React app)
+// Render the app to the DOM
+ReactDOM.render(
+  <MsalProvider instance={msalInstance}>
+    <ContextProvider>
+      <App />
+    </ContextProvider>
+  </MsalProvider>,
+  document.getElementById("root")
+);
+
+// Service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
@@ -22,13 +28,3 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
-
-
-ReactDOM.render(
-  <MsalProvider instance={msalInstance}>
-   <ContextProvider>
-      <App />
-    </ContextProvider>
-    </MsalProvider>,
-  document.getElementById("root")
-);

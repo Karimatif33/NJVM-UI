@@ -58,18 +58,56 @@ const verifyToken = async (token) => {
   };
 };
 
+app.use(express.raw({ type: '*/*', limit: '1mb' }));
+
+app.use((req, res, next) => {
+  req.rawBody = req.body.toString(); // Convert Buffer to string
+  next();
+});
+
+app.use(express.json()); // JSON parser
+
+
+app.post('/api/log', (req, res) => {
+  console.log('Headers:', req.headers);
+  console.log('Raw Body:', req.rawBody); // Logs raw body for debugging
+  console.log('Request body:', req.body); // Logs parsed JSON body
+
+  if (req.body) {
+    const { message } = req.body;
+    if (!message) {
+      console.error('Message property missing from request body');
+      return res.status(400).send('Bad Request');
+    }
+
+    console.log('Log received:', req.body);
+    res.status(200).send('Log received');
+  } else {
+    console.error('Request body is undefined or empty');
+    res.status(400).send('Bad Request');
+  }
+});
+
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Backend error:', { message: err.message, stack: err.stack });
+  res.status(500).send('Internal Server Error');
+});
+
+
 app.post('/api/auth', async (req, res) => {
   const token = req.headers['authorization']?.split(' ')[1]; // Extract Bearer token
   const username = req.headers['username'];
-  const name = req.headers['name'];
+  // const name = req.headers['name'];
 
-  if (!token || !username || !name) {
+  if (!token || !username ) {
     return res.status(400).json({ error: 'Missing token or user information' });
   }
 
   try {
     // Verify token and extract user info
-    const { email } = await verifyToken(token);
+
     const userId = username; // Assuming username is the userId for simplicity
 
     // Determine user role based on userId
@@ -82,11 +120,9 @@ app.post('/api/auth', async (req, res) => {
 
     // Respond with user info and role
     res.json({
-      message: `Hello ${name}, your username is ${username}, your role is ${role}`,
+      message: `Hello ${username}, your username is ${username}, your role is ${role}`,
       user: {
         username,
-        name,
-        email,
         userId,
         role,
         token,
@@ -158,6 +194,26 @@ app.use(cors({
   credentials: true // If you are using cookies or credentials
 }));
 
+
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//       const whitelist = ['http://196.219.36.181:3000', 'another-origin.com'];
+//       if (whitelist.indexOf(origin) !== -1 || !origin) {
+//           callback(null, true);
+//       } else {
+//           callback(new Error('Not allowed by CORS'));
+//       }
+//   }
+// };
+
+// app.use(cors(corsOptions));
+
+
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://teams.microsoft.com");
+  res.setHeader('X-Frame-Options', 'ALLOW-FROM https://teams.microsoft.com');
+  next();
+});
 // Routes
 app.use("/api/hue/portal/v1", AllRoutes);
 app.use("/api/hue/portal/v1", UiRoutes);

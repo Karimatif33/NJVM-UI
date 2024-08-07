@@ -13,11 +13,17 @@ export const ContextProvider = ({ children }) => {
   const [screenSize, setScreenSize] = useState(undefined);
   const [activeMenu, setActiveMenu] = useState(true);
   const [isClicked, setIsClicked] = useState({});
+ 
   const [IsAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
-  const [DBUser, setDBUser] = useState(null);
+  
+  
+  // const [IsAdmin, setIsAdmin] = useState(true);
+  // const [user, setUser] = useState(2209);
+  
   // const [currentcolor, setCurrentColor] = useState("#03C9D7");
   // const [currentMode, setCurrentMode] = useState("Light");
+  const [DBUser, setDBUser] = useState(null);
   const [themeSettings, setThemeSettings] = useState(false);
   const [StuName, setStuName] = useState("");
   const [CurrCourseId, setCurrCourseId] = useState("");
